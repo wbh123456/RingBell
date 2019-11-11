@@ -1,8 +1,11 @@
 import BellRingMatch as m
 import gmailAuto as g
+import getNewPeople
 
 #get bell ringers and listeners
-bellRingers = m.read_xls('Data/newForm.xls')
+# bellRingers = m.read_xls('Data/newForm.xls')
+newPeople = getNewPeople.newAppliers('Data/newForm.xls', 'Data/oldForm.xls')
+bellRingers = m.read_xls('Data/newForm.xls', newPeople[0], newPeople[1])
 listeners = [m.Person(43773.1,"Tiger","1",[2,3]),m.Person(43773.1,"Bob","2",[5,10]),m.Person(43773.1,"Jenny","3",[18,19,20]),m.Person(43773.1,"Helen","4",[16])]
 print("bellRingers: ")
 for i in bellRingers:
