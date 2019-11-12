@@ -27,7 +27,7 @@ class Person:
                 if time in listener.availability:
                     listeners.pop(listener_index)
                     listeners.append(listener)
-                    return (listener,time)
+                    return (listener,convert_enum_to_availabilty(time))
                 listener_index += 1
         return -1
 
@@ -51,11 +51,20 @@ def match_all(listeners, bell_ringers):
             matching_result_list.append([b, matched_result[0], matched_result[1]])
     return matching_result_list
 
+#convert availablity string to an enum according to time_dict
 def convert_availability(avail):
     new_avail = []
     for time in avail.split(','):
         new_avail.append(time_dict[time])
     return new_avail
+
+#convert value in time_dict back to its value(convert enum availability to string availability)
+def convert_enum_to_availabilty(enum_availability):
+    for item in time_dict.items():
+        if item[1] == enum_availability:
+            return item[0]
+    assert(False,"ERROR: Cannot find associated time in time_dict")
+    return -1
 
 #read Listener or bellRinger from a xls file
 def read_xls(file_name, startLine = 1):

@@ -24,7 +24,7 @@ for matching_result in matching_result_list:
     else :
         content = ("We have found you listener!\n   Your listener: " + matching_result[1].name + 
         "\n   Wechat ID: " + matching_result[1].WID + 
-        "\n   At time: " + str(matching_result[2]))
+        "\n   At time: " + matching_result[2])
         
     receiver = matching_result[0].email
 
