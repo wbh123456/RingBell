@@ -78,12 +78,13 @@ def read_xls(file_name, startLine = 1):
 def read_new_ringer(newForm_name, oldForm_name):
     print("Read new bell ringers ...")
     newPerson_start_line, have_new_people = newAppliers(newForm_name, oldForm_name)
+    info = []
     if have_new_people:
         print("   Found new bell ringers")
         print("   newPerson_start_line =", newPerson_start_line)
+        info = read_xls(newForm_name, newPerson_start_line)
     else:
         print("   Does not find any new bell ringers")
-    info = read_xls(newForm_name, newPerson_start_line)
     return info
 
 #Only get new ringers info 
