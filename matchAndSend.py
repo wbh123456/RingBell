@@ -1,6 +1,5 @@
 import BellRingMatch as m
 import gmailAuto as g
-import getNewPeople
 
 #get bell ringers and listeners
 # bellRingers = m.read_xls('Data/newForm.xls')
