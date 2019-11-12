@@ -63,7 +63,6 @@ def convert_enum_to_availabilty(enum_availability):
     for item in time_dict.items():
         if item[1] == enum_availability:
             return item[0]
-    assert(False,"ERROR: Cannot find associated time in time_dict")
     return -1
 
 #read Listener or bellRinger from a xls file
