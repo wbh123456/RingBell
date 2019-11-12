@@ -4,7 +4,6 @@ import xlrd
 #1. Assume new people will always be added to the end of the form
 #2. Assume any applicant in the form can be deleted. 
 def newAppliers(newForm_name, oldForm_name):
-	
     #get new form
     tmp = xlrd.open_workbook(newForm_name)
     newForm = tmp.sheet_by_index(0)
