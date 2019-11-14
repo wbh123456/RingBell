@@ -38,7 +38,7 @@ class Person:
 def match_all(listeners, bell_ringers):
     matching_result_list = [] #result is in the format [[bell_ringer, matched_listener, time], [], ...]
     for b in bell_ringers:
-        print("Matching Result:")
+        print("-->Matching Result:")
         matched_result = b.find_listener(listeners)
         #print out result
         if matched_result == -1:
@@ -72,12 +72,12 @@ def read_xls(file_name, startLine = 1):
     info = []
     for i in range(startLine, sheet.nrows): 
         info.append(Person
-            (   sheet.cell_value(i, 0),                         #application_time
-                sheet.cell_value(i, 1),                         #Name
-                sheet.cell_value(i, 2),                         #WID
-                convert_availability(sheet.cell_value(i, 5)),   #Availability 
-                sheet.cell_value(i, 3),                         #Email
-                sheet.cell_value(i, 4)                          #Topic
+            (   sheet.cell_value(i, 0),                              #application_time
+                str(sheet.cell_value(i, 1)),                         #Name
+                str(sheet.cell_value(i, 2)),                         #WID
+                convert_availability(sheet.cell_value(i, 5)),        #Availability 
+                str(sheet.cell_value(i, 3)),                         #Email
+                str(sheet.cell_value(i, 4))                          #Topic
             )
         )                 
     return info

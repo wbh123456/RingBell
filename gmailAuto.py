@@ -6,9 +6,9 @@ mail_user = 'bellringtest@gmail.com'
 mail_pass = '13472877967'
 sender = 'bellringtest@gmail.com'
 
-def sendGmail(content,receiver):
+def sendGmail(content,receiver,title):
     message = MIMEText(content,'plain','utf-8')
-    message['Subject'] = 'Your matching result from Bell Ringer' 
+    message['Subject'] = title 
 
     message['From'] = sender 
     message['To'] = receiver  
