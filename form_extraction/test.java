@@ -10,7 +10,7 @@ public class test {
 	
 	public static void main (String[] args) throws IOException, ExecutionException, InterruptedException {
 		
-		System.setProperty("webdriver.chrome.driver", "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chromedriver.exe");
+		System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
 		
 		double c = 1;
 		while (c < 2) {
