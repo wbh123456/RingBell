@@ -20,7 +20,7 @@ matching_result_list = m.match_all(listeners, bellRingers)
 #Read texts
 #解铃人须知
 file1 = codecs.open("Data/br_info1.txt","r","utf-8")
-br_info1 = file1.read()
+br_reminder = file1.read()
 file1.close()
 
 for matching_result in matching_result_list:
