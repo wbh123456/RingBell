@@ -3,9 +3,9 @@ from email.mime.text import MIMEText
 import BellRingMatch as m
 
 mail_host = 'smtp.gmail.com'
-mail_user = 'bellringtest@gmail.com'
-mail_pass = '13472877967'
-sender = 'bellringtest@gmail.com'
+mail_user = 'empowerchange.peerlistener@gmail.com'
+mail_pass = 'EC123456789'
+sender = 'empowerchange.peerlistener@gmail.com'
 
 def sendGmail(content,receiver,title):
     message = MIMEText(content,'plain','utf-8')
