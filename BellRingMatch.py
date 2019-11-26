@@ -1,4 +1,5 @@
 import xlrd
+from datetime import datetime
 
 time_dict = {
     "周一 6:00-7:00pm":1,"周一 7:00-8:00pm":2,"周一 8:00-9:00pm":3,"周一 9:00-10:00pm":4,
@@ -34,7 +35,7 @@ class Person:
     def print_person(self):
         print("name =", self.name,"; Wechat ID =", self.WID, "; Topic =", self.topic)
 
-
+#Match all bell ringers with proper listeners
 def match_all(listeners, bell_ringers):
     matching_result_list = [] #result is in the format [[bell_ringer, matched_listener, time], [], ...]
     for b in bell_ringers:
@@ -51,6 +52,7 @@ def match_all(listeners, bell_ringers):
             matching_result_list.append([b, matched_result[0], matched_result[1]])
     return matching_result_list
 
+#------------Conversions------------
 #convert availablity string to an enum according to time_dict
 def convert_availability(avail):
     new_avail = []
@@ -65,6 +67,10 @@ def convert_enum_to_availabilty(enum_availability):
             return item[0]
     return -1
 
+def convert_float_to_datetime(float_time):
+    return datetime(*xlrd.xldate_as_tuple(float_time, 0))
+#------------End of conversions------------
+
 #read Listener or bellRinger from a xls file
 def read_xls(file_name, startLine = 1):
     wb = xlrd.open_workbook(file_name)
@@ -72,7 +78,7 @@ def read_xls(file_name, startLine = 1):
     info = []
     for i in range(startLine, sheet.nrows): 
         info.append(Person
-            (   sheet.cell_value(i, 0),                              #application_time
+            (   convert_float_to_datetime(sheet.cell_value(i, 0)),   #application_time
                 str(sheet.cell_value(i, 1)),                         #Name
                 str(sheet.cell_value(i, 2)),                         #WID
                 convert_availability(sheet.cell_value(i, 5)),        #Availability 
