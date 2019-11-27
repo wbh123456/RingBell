@@ -36,8 +36,9 @@ class Person:
         print("name =", self.name,"; Wechat ID =", self.WID, "; Topic =", self.topic)
 
 #Match all bell ringers with proper listeners
+#result is in the format [[bell_ringer, matched_listener, time], [bell_ringer, -1, -1], ...]
 def match_all(listeners, bell_ringers):
-    matching_result_list = [] #result is in the format [[bell_ringer, matched_listener, time], [], ...]
+    matching_result_list = [] 
     for b in bell_ringers:
         print("-->Matching Result:")
         matched_result = b.find_listener(listeners)

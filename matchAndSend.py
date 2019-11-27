@@ -3,6 +3,7 @@ import gmailAuto as g
 
 #---------------------------------------------extract bell ringers and listeners------------------------------------------------------------
 # bellRingers = m.read_xls('Data/newForm.xls')
+# bellRingers = m.read_new_ringer('Example/newForm.xls', 'Example/oldForm.xls')
 bellRingers = m.read_new_ringer('Data/newForm.xls', 'Data/oldForm.xls')
 listeners = m.read_xls("Data/Listeners.xls")
 print("-->new bell ringers: ")
@@ -30,8 +31,8 @@ for matching_result in matching_result_list:
     print("-->Sending email to Bell Ringer: " + bell_ringer.name + " at " + bell_ringer.email + " ... ")
     g.sendGmail(br_content, bell_ringer.email, title)
 
-    print("-->Sending email to Listener: " + listener.name + " at " + listener.email + " ... ")
     if l_content != -1:
+        print("-->Sending email to Listener: " + listener.name + " at " + listener.email + " ... ")
         g.sendGmail(l_content, listener.email, title)
     else:
         print("Does not need to send email to Listener")
