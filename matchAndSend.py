@@ -1,11 +1,22 @@
 import BellRingMatch as m
 import gmailAuto as g
+import os
+
+#Get "ralative path"
+script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
+rel_path_newForm = "Data/newForm.xls"
+rel_path_oldForm = "Data/oldForm.xls"
+rel_path_listeners = "Data/Listeners.xls"
+# rel_path_newForm = "Example/newForm.xls"
+# rel_path_oldForm = "Example/oldForm.xls"
+abs_path_newForm = os.path.join(script_dir, rel_path_newForm)
+abs_path_oldForm = os.path.join(script_dir, rel_path_oldForm)
+abs_path_listeners = os.path.join(script_dir, rel_path_listeners)
 
 #---------------------------------------------extract bell ringers and listeners------------------------------------------------------------
 # bellRingers = m.read_xls('Data/newForm.xls')
-# bellRingers = m.read_new_ringer('Example/newForm.xls', 'Example/oldForm.xls')
-bellRingers = m.read_new_ringer('Data/newForm.xls', 'Data/oldForm.xls')
-listeners = m.read_xls("Data/Listeners.xls")
+bellRingers = m.read_new_ringer(abs_path_newForm, abs_path_oldForm)
+listeners = m.read_xls(abs_path_listeners)
 print("-->new bell ringers: ")
 for i in bellRingers:
     i.print_person()
