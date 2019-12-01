@@ -1,4 +1,5 @@
 import xlrd
+from datetime import datetime
 
 time_dict = {
     "周一 6:00-7:00pm":1,"周一 7:00-8:00pm":2,"周一 8:00-9:00pm":3,"周一 9:00-10:00pm":4,
@@ -27,18 +28,19 @@ class Person:
                 if time in listener.availability:
                     listeners.pop(listener_index)
                     listeners.append(listener)
-                    return (listener,time)
+                    return (listener,convert_enum_to_availabilty(time))
                 listener_index += 1
         return -1
 
     def print_person(self):
         print("name =", self.name,"; Wechat ID =", self.WID, "; Topic =", self.topic)
 
-
+#Match all bell ringers with proper listeners
+#result is in the format [[bell_ringer, matched_listener, time], [bell_ringer, -1, -1], ...]
 def match_all(listeners, bell_ringers):
-    matching_result_list = [] #result is in the format [[bell_ringer, matched_listener, time], [], ...]
+    matching_result_list = [] 
     for b in bell_ringers:
-        print("Matching Result:")
+        print("-->Matching Result:")
         matched_result = b.find_listener(listeners)
         #print out result
         if matched_result == -1:
@@ -51,11 +53,24 @@ def match_all(listeners, bell_ringers):
             matching_result_list.append([b, matched_result[0], matched_result[1]])
     return matching_result_list
 
+#------------Conversions------------
+#convert availablity string to an enum according to time_dict
 def convert_availability(avail):
     new_avail = []
     for time in avail.split(','):
         new_avail.append(time_dict[time])
     return new_avail
+
+#convert value in time_dict back to its value(convert enum availability to string availability)
+def convert_enum_to_availabilty(enum_availability):
+    for item in time_dict.items():
+        if item[1] == enum_availability:
+            return item[0]
+    return -1
+
+def convert_float_to_datetime(float_time):
+    return datetime(*xlrd.xldate_as_tuple(float_time, 0))
+#------------End of conversions------------
 
 #read Listener or bellRinger from a xls file
 def read_xls(file_name, startLine = 1):
@@ -64,12 +79,12 @@ def read_xls(file_name, startLine = 1):
     info = []
     for i in range(startLine, sheet.nrows): 
         info.append(Person
-            (   sheet.cell_value(i, 0),                         #application_time
-                sheet.cell_value(i, 1),                         #Name
-                sheet.cell_value(i, 2),                         #WID
-                convert_availability(sheet.cell_value(i, 5)),   #Availability 
-                sheet.cell_value(i, 3),                         #Email
-                sheet.cell_value(i, 4)                          #Topic
+            (   convert_float_to_datetime(sheet.cell_value(i, 0)),   #application_time
+                str(sheet.cell_value(i, 1)),                         #Name
+                str(sheet.cell_value(i, 2)),                         #WID
+                convert_availability(sheet.cell_value(i, 5)),        #Availability 
+                str(sheet.cell_value(i, 3)),                         #Email
+                str(sheet.cell_value(i, 4))                          #Topic
             )
         )                 
     return info

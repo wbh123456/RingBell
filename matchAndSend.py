@@ -1,33 +1,40 @@
 import BellRingMatch as m
 import gmailAuto as g
 
-#get bell ringers and listeners
+#---------------------------------------------extract bell ringers and listeners------------------------------------------------------------
 # bellRingers = m.read_xls('Data/newForm.xls')
-#bellRingers = m.read_xls('Data/newForm.xls')
+# bellRingers = m.read_new_ringer('Example/newForm.xls', 'Example/oldForm.xls')
 bellRingers = m.read_new_ringer('Data/newForm.xls', 'Data/oldForm.xls')
-listeners = [m.Person(43773.1,"Tiger","1",[2,3]),m.Person(43773.1,"Bob","2",[5,10]),m.Person(43773.1,"Jenny","3",[18,19,20]),m.Person(43773.1,"Helen","4",[16])]
-print("new bell ringers: ")
+listeners = m.read_xls("Data/Listeners.xls")
+print("-->new bell ringers: ")
 for i in bellRingers:
     i.print_person()
-print("Listeners:")
+print("-->Listeners:")
 for i in listeners:
     i.print_person()
 
-#match
+#------------------------------------------------match bell rings and listeners---------------------------------------------------------------
 matching_result_list = m.match_all(listeners, bellRingers)
 
-# #send gmail
-for matching_result in matching_result_list:
-    # matching_resilt format :  [bell_ringer, matched_listener, time]
-    if matching_result[1] == -1:
-        content = "Sorry, we cannot find a listener for you"
-    else :
-        content = ("We have found you listener!\n   Your listener: " + matching_result[1].name + 
-        "\n   Wechat ID: " + matching_result[1].WID + 
-        "\n   At time: " + str(matching_result[2]))
-        
-    receiver = matching_result[0].email
+#----------------------------------------------------------send gmail-------------------------------------------------------------------------
 
-    print("Sending email to " + matching_result[0].name + " at " + receiver + " ... ")
-    g.sendGmail(content, receiver)
+for matching_result in matching_result_list:
+    #matching_resilt format :  [bell_ringer, matched_listener, time]
+    bell_ringer = matching_result[0]
+    listener = matching_result[1]
+    time = matching_result[2]
+
+    #generate email contents
+    br_content, l_content, title = g.generate_email_content(bell_ringer, listener,time)
+
+    #Send Emails
+    print("-->Sending email to Bell Ringer: " + bell_ringer.name + " at " + bell_ringer.email + " ... ")
+    g.sendGmail(br_content, bell_ringer.email, title)
+
+    if l_content != -1:
+        print("-->Sending email to Listener: " + listener.name + " at " + listener.email + " ... ")
+        g.sendGmail(l_content, listener.email, title)
+    else:
+        print("Does not need to send email to Listener")
+
 
