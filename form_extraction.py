@@ -29,49 +29,25 @@ def test():
         print("done")
 
 # form_extraction headless
-def extract_headless():
-    start = time.time()
+def get_headless():
     options = Options()
     options.headless = True
-
-    # options = webdriver.ChromeOptions()
     prefs = {'download.default_directory' : abs_path}
     options.add_experimental_option('prefs', prefs)
-    
-    print("starting browser...")
-    # we can now start Firefox and it will run inside the virtual display
-    browser = webdriver.Chrome(options=options)
+    return options
 
-    print("going to www.askform.cn/login ...")
-    browser.get("https://www.askform.cn/login")
-
-    print("loggin in...")
-    browser.find_element_by_id("un").send_keys("contact.listener@gmail.com")
-    browser.find_element_by_id("pwd").send_keys("iamyourlistener")
-    browser.find_element_by_xpath(".//a[@onclick='askformLogin()']").click()
-
-    browser.find_element_by_id("menu4603080002").click()
-
-    browser.find_element_by_xpath(".//a[@href='/Survey/DataList.aspx?AppConfigID=4603080002&FormApplicationID=10801670001&FormCategoryID=10833290001&FormID=16128410001']").click()
-    print("downloading...")
-    browser.find_element_by_id("btnExport").click()
-
-    time.sleep(5)
-    browser.close()
-
-    end = time.time()
-    print("time: " + str(end - start))
+def get_options():
+    chrome_options = webdriver.ChromeOptions()
+    prefs = {'download.default_directory' : abs_path}
+    chrome_options.add_experimental_option('prefs', prefs)
+    return chrome_options
 
 def extract():
     #form_extraction
     start = time.time()
-    chrome_options = webdriver.ChromeOptions()
-    prefs = {'download.default_directory' : abs_path}
-    chrome_options.add_experimental_option('prefs', prefs)
-
     print("starting browser...")
     # we can now start Firefox and it will run inside the virtual display
-    browser = webdriver.Chrome(chrome_options=chrome_options)
+    browser = webdriver.Chrome(chrome_options=get_options())
 
     print("going to www.askform.cn/login ...")
     browser.get("https://www.askform.cn/login")
@@ -94,4 +70,3 @@ def extract():
     print("time: " + str(end - start))
 
 extract()
-# extract_headless()
