@@ -29,7 +29,7 @@ def test():
         print("done")
 
 # form_extraction headless
-def get_headless():
+def get_headless_options():
     options = Options()
     options.headless = True
     prefs = {'download.default_directory' : abs_path}
