@@ -10,13 +10,19 @@ time_dict = {
 }
 
 class Person:
-    def __init__(self, application_time, name, WID, availability , email = "", topic = ""):
+    def __init__(self, application_time, name, WID, availability, email, topic, 
+                gender = "", time = "", need = "", condition = "", other_info = ""):
         self.application_time = application_time
         self.name = name
         self.WID = WID
         self.availability = availability
         self.topic = topic
         self.email = email
+        self.gender = gender
+        self.time = time
+        self.need = need
+        self.condition = condition
+        self.other_info = other_info
 
     # Find proper listener for a bell_ringer
     # --> If a listener has been selected, it will be moved to the end the the candidate list to lower its chance of being seleted again```
@@ -33,7 +39,7 @@ class Person:
         return -1
 
     def print_person(self):
-        print("name =", self.name,"; Wechat ID =", self.WID, "; Topic =", self.topic)
+        print("name =", self.name,"; Wechat ID =", self.WID, "; Email =", self.email)
 
 #Match all bell ringers with proper listeners
 #result is in the format [[bell_ringer, matched_listener, time], [bell_ringer, -1, -1], ...]
@@ -73,20 +79,37 @@ def convert_float_to_datetime(float_time):
 #------------End of conversions------------
 
 #read Listener or bellRinger from a xls file
-def read_xls(file_name, startLine = 1):
+def read_xls(file_name, is_listener = False, startLine = 1):
     wb = xlrd.open_workbook(file_name)
     sheet = wb.sheet_by_index(0)
     info = []
     for i in range(startLine, sheet.nrows): 
-        info.append(Person
-            (   convert_float_to_datetime(sheet.cell_value(i, 0)),   #application_time
-                str(sheet.cell_value(i, 1)),                         #Name
-                str(sheet.cell_value(i, 2)),                         #WID
-                convert_availability(sheet.cell_value(i, 5)),        #Availability 
-                str(sheet.cell_value(i, 3)),                         #Email
-                str(sheet.cell_value(i, 4))                          #Topic
+        if is_listener:
+            info.append(Person
+                (   convert_float_to_datetime(sheet.cell_value(i, 0)),   #application_time
+                    str(sheet.cell_value(i, 1)),                         #Name
+                    str(sheet.cell_value(i, 2)),                         #WID
+                    convert_availability(sheet.cell_value(i, 5)),        #Availability 
+                    str(sheet.cell_value(i, 3)),                         #Email
+                    str(sheet.cell_value(i, 4))                          #Topic
+                )
             )
-        )                 
+        else:
+            # Bell Ringer
+            info.append(Person
+                (   convert_float_to_datetime(sheet.cell_value(i, 0)),      #application_time
+                    str(sheet.cell_value(i, 1)),                            #Name
+                    str(sheet.cell_value(i, 3)),                            #WID
+                    convert_availability(sheet.cell_value(i, 13)),          #Availability 
+                    str(sheet.cell_value(i, 2)),                            #Email
+                    str(sheet.cell_value(i, 10)),                           #Topic
+                    str(sheet.cell_value(i, 4)),                            #gender
+                    convert_float_to_datetime(sheet.cell_value(i, 0)),      #time
+                    str(sheet.cell_value(i, 11)),                           #need
+                    str(sheet.cell_value(i, 12)),                           #condition
+                    str(sheet.cell_value(i, 14)),                           #other_info
+                )
+            )                 
     return info
 
 #Read new bell ringers from xls
@@ -97,7 +120,7 @@ def read_new_ringer(newForm_name, oldForm_name):
     if have_new_people:
         print("   Found new bell ringers")
         print("   newPerson_start_line =", newPerson_start_line)
-        info = read_xls(newForm_name, newPerson_start_line)
+        info = read_xls(newForm_name, startLine = newPerson_start_line)
     else:
         print("   Does not find any new bell ringers")
     return info

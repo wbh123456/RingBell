@@ -47,6 +47,7 @@ def generate_email_content(bell_ringer, listener, time):
         br_content =  br_content.replace("@X",bell_ringer.name,1)
         br_content =  br_content.replace("@X",listener.name,1)
         br_content =  br_content.replace("@X",time,1)
+        br_content =  br_content.replace("@X",listener.name,1)
         title = succeed_title
     else:
         br_content = c.html_br_content_fail
@@ -63,6 +64,8 @@ def generate_email_content(bell_ringer, listener, time):
         l_content =  l_content.replace("@X",bell_ringer.name,1)
         l_content =  l_content.replace("@X",bell_ringer.email,1)
         l_content =  l_content.replace("@X",bell_ringer.topic,1)
+        l_content =  l_content.replace("@X",bell_ringer.need,1)
+        l_content =  l_content.replace("@X",bell_ringer.other_info,1)
         title = succeed_title
     else:
         l_content = -1

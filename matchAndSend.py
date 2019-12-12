@@ -7,8 +7,6 @@ script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
 rel_path_newForm = "Data/newForm.xls"
 rel_path_oldForm = "Data/oldForm.xls"
 rel_path_listeners = "Data/Listeners.xls"
-# rel_path_newForm = "Example/newForm.xls"
-# rel_path_oldForm = "Example/oldForm.xls"
 abs_path_newForm = os.path.join(script_dir, rel_path_newForm)
 abs_path_oldForm = os.path.join(script_dir, rel_path_oldForm)
 abs_path_listeners = os.path.join(script_dir, rel_path_listeners)
@@ -16,7 +14,7 @@ abs_path_listeners = os.path.join(script_dir, rel_path_listeners)
 #---------------------------------------------extract bell ringers and listeners------------------------------------------------------------
 # bellRingers = m.read_xls('Data/newForm.xls')
 bellRingers = m.read_new_ringer(abs_path_newForm, abs_path_oldForm)
-listeners = m.read_xls(abs_path_listeners)
+listeners = m.read_xls(abs_path_listeners,is_listener = True)
 print("-->new bell ringers: ")
 for i in bellRingers:
     i.print_person()
