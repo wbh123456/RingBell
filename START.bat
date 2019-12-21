@@ -1,6 +1,6 @@
-@echo on 
+锘緻echo on 
 form_extraction.exe
 del "Data\oldForm.xls"
 rename "Data\newForm.xls" oldForm.xls
-rename "Data\数据列表.xls" newForm.xls
+rename "Data\鏁版嵁鍒楄〃.xls" newForm.xls
 matchAndSend.exe
