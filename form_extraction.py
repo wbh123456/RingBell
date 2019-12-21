@@ -53,8 +53,12 @@ def extract(is_listener):
     browser.get("https://www.askform.cn/login")
 
     print("loggin in...")
-    browser.find_element_by_id("un").send_keys("contact.listener@gmail.com")
-    browser.find_element_by_id("pwd").send_keys("iamyourlistener")
+    browser.find_element_by_xpath("/html/body/div[1]/div[1]/div/div[3]/div[2]/input").send_keys("contact.listener@gmail.com")
+    browser.find_element_by_xpath("/html/body/div[1]/div[1]/div/div[4]/div/input").send_keys("iamyourlistener")
+    # on old website
+    # browser.find_element_by_id("emailOrTel").send_keys("contact.listener@gmail.com")
+    # browser.find_element_by_id("password").send_keys("iamyourlistener")
+
     browser.find_element_by_xpath(".//a[@onclick='askformLogin()']").click()
 
     browser.find_element_by_id("menu4603080002").click()
