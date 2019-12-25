@@ -1,4 +1,10 @@
-﻿@echo on 
+﻿@echo off 
+set LOGFILE=START_log.log
+call :LOG > %LOGFILE%
+exit /B
+
+:LOG
+
 chcp 65001
 form_extraction.exe
 del "Data\oldForm.xls"
