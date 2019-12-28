@@ -1,6 +1,7 @@
 ﻿@echo off 
-
 chcp 65001
+cd %~dp0
+
 form_extraction.exe
 del "Data\oldForm.xls"
 rename "Data\newForm.xls" oldForm.xls
