@@ -104,7 +104,7 @@ def read_xls(file_name, is_listener = False, startLine = 1):
                     str(sheet.cell_value(i, 2)),                            #Email
                     str(sheet.cell_value(i, 10)),                           #Topic
                     str(sheet.cell_value(i, 4)),                            #gender
-                    convert_float_to_datetime(sheet.cell_value(i, 0)),      #time
+                    convert_float_to_datetime(sheet.cell_value(i, 17)),     #time
                     str(sheet.cell_value(i, 11)),                           #need
                     str(sheet.cell_value(i, 12)),                           #condition
                     str(sheet.cell_value(i, 14)),                           #other_info
