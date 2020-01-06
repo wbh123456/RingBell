@@ -28,13 +28,15 @@ matching_result_list = m.match_all(listeners, bellRingers)
 #----------------------------------------------------------send gmail-------------------------------------------------------------------------
 
 for matching_result in matching_result_list:
-    #matching_resilt format :  [bell_ringer, matched_listener, time]
+    #matching_resilt format :  [bell_ringer, matched_listener, date, time]
     bell_ringer = matching_result[0]
     listener = matching_result[1]
-    time = matching_result[2]
+    date = matching_result[2]
+    time = matching_result[3]
+    date_and_time =  date + " " + time
 
     #generate email contents
-    br_content, l_content, title = g.generate_email_content(bell_ringer, listener,time)
+    br_content, l_content, title = g.generate_email_content(bell_ringer, listener, date_and_time)
 
     #Send Emails
     print("-->Sending email to Bell Ringer: " + bell_ringer.name + " at " + bell_ringer.email + " ... ")

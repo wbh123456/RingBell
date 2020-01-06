@@ -1,5 +1,7 @@
 import xlrd
 from datetime import datetime
+from datetime import date
+from datetime import timedelta
 
 time_dict = {
     "周一 6:00-7:00pm":1,"周一 7:00-8:00pm":2,"周一 8:00-9:00pm":3,"周一 9:00-10:00pm":4,
@@ -28,13 +30,32 @@ class Person:
     # --> If a listener has been selected, it will be moved to the end the the candidate list to lower its chance of being seleted again```
     # --> If we cannot match a bell_ringer with a listener, then return -1
     def find_listener(self, listeners):
-        for time in self.availability:
+        # Find the first matched time after the start_date
+        start_date = self.time + timedelta(days=1)
+        start_weekday = start_date.isoweekday()
+        # Reorder availability list so that the first element is the next potential time slot after start_weekend
+        reordered_availability = self.availability[:]
+        for time_slot in self.availability:
+            weekday = (time_slot-1) // 4 + 1
+            if weekday >= start_weekday:
+                break
+            reordered_availability.pop(0)
+            reordered_availability.append(time_slot)
+        # Match a listener with the same availability
+        for time in reordered_availability:
             listener_index = 0
             for listener in listeners:
                 if time in listener.availability:
+                    # move down the listener rank in the list
                     listeners.pop(listener_index)
                     listeners.append(listener)
-                    return (listener,convert_enum_to_availabilty(time))
+                    # Calculate matched date = start_date + date diff
+                    matched_weekday = (time - 1) // 4 + 1
+                    delta_days = matched_weekday - start_weekday
+                    if delta_days < 0:
+                        delta_days += 7
+                    matched_date = start_date + timedelta(days = delta_days)
+                    return (listener, matched_date, convert_enum_to_availabilty(time))
                 listener_index += 1
         return -1
 
@@ -42,7 +63,7 @@ class Person:
         print("name =", self.name,"; Wechat ID =", self.WID, "; Email =", self.email)
 
 #Match all bell ringers with proper listeners
-#result is in the format [[bell_ringer, matched_listener, time], [bell_ringer, -1, -1], ...]
+#result is in the format [[bell_ringer, matched_listener, date, time], [bell_ringer, -1, -1, -1], ...]
 def match_all(listeners, bell_ringers):
     matching_result_list = [] 
     for b in bell_ringers:
@@ -51,12 +72,13 @@ def match_all(listeners, bell_ringers):
         #print out result
         if matched_result == -1:
             print("     Cannot find a Listener!")
-            matching_result_list.append([b, -1, -1])
+            matching_result_list.append([b, -1, -1, -1])
         else:
             print("     Bell Ringer: ", b.name)
             print("     Listener:    ", matched_result[0].name)
-            print("     At Time:     ", matched_result[1])
-            matching_result_list.append([b, matched_result[0], matched_result[1]])
+            print("     On Date:     ", matched_result[1])
+            print("     At Time:     ", matched_result[2])
+            matching_result_list.append([b, matched_result[0], matched_result[1].isoformat(), matched_result[2]])
     return matching_result_list
 
 #------------Conversions------------
@@ -76,6 +98,9 @@ def convert_enum_to_availabilty(enum_availability):
 
 def convert_float_to_datetime(float_time):
     return datetime(*xlrd.xldate_as_tuple(float_time, 0))
+
+def convert_float_to_date(float_time):
+    return datetime.date(convert_float_to_datetime(float_time))
 #------------End of conversions------------
 
 #read Listener or bellRinger from a xls file
@@ -104,7 +129,7 @@ def read_xls(file_name, is_listener = False, startLine = 1):
                     str(sheet.cell_value(i, 2)),                            #Email
                     str(sheet.cell_value(i, 10)),                           #Topic
                     str(sheet.cell_value(i, 4)),                            #gender
-                    convert_float_to_datetime(sheet.cell_value(i, 17)),     #time
+                    convert_float_to_date(sheet.cell_value(i, 17)),         #time
                     str(sheet.cell_value(i, 11)),                           #need
                     str(sheet.cell_value(i, 12)),                           #condition
                     str(sheet.cell_value(i, 14)),                           #other_info
