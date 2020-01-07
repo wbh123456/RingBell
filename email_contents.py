@@ -74,6 +74,9 @@ html_l_content = """
 <li><strong>解聆需求: @X</strong></li>
 </ul>
 <ul>
+<li><strong>精神状态: @X</strong></li>
+</ul>
+<ul>
 <li><strong>其他信息: @X</strong></li>
 </ul>
 <p> </p>

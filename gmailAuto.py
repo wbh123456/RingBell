@@ -65,6 +65,7 @@ def generate_email_content(bell_ringer, listener, time):
         l_content =  l_content.replace("@X",bell_ringer.email,1)
         l_content =  l_content.replace("@X",bell_ringer.topic,1)
         l_content =  l_content.replace("@X",bell_ringer.need,1)
+        l_content =  l_content.replace("@X",bell_ringer.condition,1)
         l_content =  l_content.replace("@X",bell_ringer.other_info,1)
         title = succeed_title
     else:
