@@ -23,7 +23,7 @@ abs_path_listeners = os.path.join(script_dir, rel_path_listeners)
 #---------------------------------------------extract bell ringers and listeners------------------------------------------------------------
 # bellRingers = m.read_xls('Data/newForm.xls')
 bellRingers = m.read_new_ringer(abs_path_newForm, abs_path_oldForm)
-listeners = m.read_xls(abs_path_listeners,is_listener = True)
+listeners = m.read_listener(abs_path_listeners)
 print("-->new bell ringers: ")
 for i in bellRingers:
     i.print_person()

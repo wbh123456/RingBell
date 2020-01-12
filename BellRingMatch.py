@@ -150,6 +150,9 @@ def read_new_ringer(newForm_name, oldForm_name):
         print("   Does not find any new bell ringers")
     return info
 
+def read_listener(listener_form):
+    return read_xls(listener_form, is_listener = True)
+
 #Only get new ringers info 
 #1. Assume new people will always be added to the end of the form
 #2. Assume any applicant in the form can be deleted. 
