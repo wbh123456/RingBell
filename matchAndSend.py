@@ -13,8 +13,8 @@ if not GET_TEST_FORMS:
     rel_path_oldForm = "Data/oldForm.xls"
 else:
     print("Getting test forms from examples!")
-    rel_path_newForm = "examples/newForm.xls"
-    rel_path_oldForm = "examples/oldForm.xls"
+    rel_path_newForm = "example/newForm.xls"
+    rel_path_oldForm = "example/oldForm.xls"
 rel_path_listeners = "Data/Listeners.xls"
 abs_path_newForm = os.path.join(script_dir, rel_path_newForm)
 abs_path_oldForm = os.path.join(script_dir, rel_path_oldForm)
