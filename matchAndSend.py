@@ -42,7 +42,9 @@ for matching_result in matching_result_list:
     listener = matching_result[1]
     date = matching_result[2]
     time = matching_result[3]
-    date_and_time =  date + " " + time
+    date_and_time = ""
+    if date != -1:
+        date_and_time = date + " " + time
 
     #generate email contents
     br_content, l_content, title = g.generate_email_content(bell_ringer, listener, date_and_time)
