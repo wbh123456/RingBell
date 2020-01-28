@@ -23,7 +23,7 @@ abs_path_listeners = os.path.join(script_dir, rel_path_listeners)
 #---------------------------------------------extract bell ringers and listeners------------------------------------------------------------
 # bellRingers = m.read_xls('Data/newForm.xls')
 bellRingers = m.read_new_ringer(abs_path_newForm, abs_path_oldForm)
-listeners = m.read_xls(abs_path_listeners,is_listener = True)
+listeners = m.read_listener(abs_path_listeners)
 print("-->new bell ringers: ")
 for i in bellRingers:
     i.print_person()
@@ -42,7 +42,9 @@ for matching_result in matching_result_list:
     listener = matching_result[1]
     date = matching_result[2]
     time = matching_result[3]
-    date_and_time =  date + " " + time
+    date_and_time = ""
+    if date != -1:
+        date_and_time = date + " " + time
 
     #generate email contents
     br_content, l_content, title = g.generate_email_content(bell_ringer, listener, date_and_time)

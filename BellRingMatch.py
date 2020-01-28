@@ -1,4 +1,5 @@
 import xlrd
+from xlutils.copy import copy
 from datetime import datetime
 from datetime import date
 from datetime import timedelta
@@ -11,20 +12,30 @@ time_dict = {
     "周五 6:00-7:00pm":17,"周五 7:00-8:00pm":18,"周五 8:00-9:00pm":19,"周五 9:00-10:00pm":20
 }
 
+# avail_after info starts after this colom in Listener.xls
+START_COL_AVAIL_AFTER = 6
+
 class Person:
     def __init__(self, application_time, name, WID, availability, email, topic, 
-                gender = "", time = "", need = "", condition = "", other_info = ""):
+                gender = "", time = "", need = "", condition = "", other_info = "",
+                listener_num = "", avail_after = "", file_dir = ""):
+        # mandatory variables
         self.application_time = application_time
         self.name = name
         self.WID = WID
         self.availability = availability
         self.topic = topic
         self.email = email
+        # optional varaibles
         self.gender = gender
         self.time = time
         self.need = need
         self.condition = condition
         self.other_info = other_info
+        self.listener_num = listener_num
+        # listener specific variable, a dictionary. The listener will be only available after this date in a time slot
+        self.avail_after = avail_after 
+        self.file_dir = file_dir
 
     # Find proper listener for a bell_ringer
     # --> If a listener has been selected, it will be moved to the end the the candidate list to lower its chance of being seleted again```
@@ -42,21 +53,37 @@ class Person:
             reordered_availability.pop(0)
             reordered_availability.append(time_slot)
         # Match a listener with the same availability
-        for time in reordered_availability:
-            listener_index = 0
-            for listener in listeners:
-                if time in listener.availability:
-                    # move down the listener rank in the list
-                    listeners.pop(listener_index)
-                    listeners.append(listener)
-                    # Calculate matched date = start_date + date diff
-                    matched_weekday = (time - 1) // 4 + 1
-                    delta_days = matched_weekday - start_weekday
-                    if delta_days < 0:
-                        delta_days += 7
-                    matched_date = start_date + timedelta(days = delta_days)
-                    return (listener, matched_date, convert_enum_to_availabilty(time))
-                listener_index += 1
+        continue_finding_listeners = True # Flag indicates if need to loop through listeners again
+        loop_number = 0 # How many times it has looped
+        while continue_finding_listeners:
+            continue_finding_listeners = False # Dont loop again if no listener's time_slot matches
+            for time in reordered_availability:
+                for listener in listeners:
+                    if time in listener.availability:
+                        # Calculate matched date = start_date + date diff
+                        matched_weekday = (time - 1) // 4 + 1
+                        delta_days = matched_weekday - start_weekday
+                        if delta_days < 0:
+                            delta_days += 7
+                        delta_days += 7 * loop_number
+                        matched_date = start_date + timedelta(days = delta_days)
+
+                        # Check is the listener is available ( if listener is already busy on this day)
+                        if (time + START_COL_AVAIL_AFTER in listener.avail_after and
+                            matched_date <= listener.avail_after[time + START_COL_AVAIL_AFTER] ):
+                            continue_finding_listeners = True
+                            continue
+
+                        # Update matched listener's avail_after
+                        rb = xlrd.open_workbook(listener.file_dir)
+                        wb = copy(rb)
+                        sheet = wb.get_sheet(0)
+                        sheet.write(listener.listener_num, time + START_COL_AVAIL_AFTER, matched_date)
+                        wb.save(listener.file_dir)
+
+                        return (listener, matched_date, convert_enum_to_availabilty(time))
+
+            loop_number += 1
         return -1
 
     def print_person(self):
@@ -103,20 +130,35 @@ def convert_float_to_date(float_time):
     return datetime.date(convert_float_to_datetime(float_time))
 #------------End of conversions------------
 
-#read Listener or bellRinger from a xls file
+# Read Listener or bellRinger from a xls file
 def read_xls(file_name, is_listener = False, startLine = 1):
     wb = xlrd.open_workbook(file_name)
     sheet = wb.sheet_by_index(0)
     info = []
-    for i in range(startLine, sheet.nrows): 
+    for i in range(startLine, sheet.nrows):
         if is_listener:
+            # get avail_after_dict
+            avail_after_dict = {}
+            for offset in range(1,21):  
+                index = offset + START_COL_AVAIL_AFTER
+                if index >= sheet.ncols:
+                    break
+                cell = sheet.cell_value(i, index)
+                if cell != "":
+                    cell = convert_float_to_date(cell)
+                    avail_after_dict[index] = cell
+            # Construct Person instance
             info.append(Person
                 (   convert_float_to_datetime(sheet.cell_value(i, 0)),   #application_time
                     str(sheet.cell_value(i, 1)),                         #Name
                     str(sheet.cell_value(i, 2)),                         #WID
                     convert_availability(sheet.cell_value(i, 5)),        #Availability 
                     str(sheet.cell_value(i, 3)),                         #Email
-                    str(sheet.cell_value(i, 4))                          #Topic
+                    str(sheet.cell_value(i, 4)),                         #Topic
+                    # Optional arguments
+                    listener_num        = i,
+                    avail_after         = avail_after_dict,
+                    file_dir            = file_name
                 )
             )
         else:
@@ -137,7 +179,7 @@ def read_xls(file_name, is_listener = False, startLine = 1):
             )                 
     return info
 
-#Read new bell ringers from xls
+# Read new bell ringers from xls
 def read_new_ringer(newForm_name, oldForm_name):
     print("Read new bell ringers ...")
     newPerson_start_line, have_new_people = newAppliers(newForm_name, oldForm_name)
@@ -149,6 +191,9 @@ def read_new_ringer(newForm_name, oldForm_name):
     else:
         print("   Does not find any new bell ringers")
     return info
+
+def read_listener(listener_form):
+    return read_xls(listener_form, is_listener = True)
 
 #Only get new ringers info 
 #1. Assume new people will always be added to the end of the form
