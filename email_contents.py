@@ -15,11 +15,12 @@ html_br_content_success = """
 <p><span style="text-decoration: underline;"> <span style="font-weight: 400;"> 若摇铃时间开始后25分钟您仍未登陆群聊，此次线上解聆将被取消。 </span> </span></p>
 <p> </p>
 <p><span style="font-weight: 400;"> 倾听者们皆为无偿倾听，他们志愿付出自己的时间和一份努力为同龄人提供一个开放，包容的倾诉/倾听空间。相互尊重是良好志愿解聆关系的基础，请谨遵摇铃守则并保证准时。 </span></p>
-<p><span style="font-weight: 400;"> 若摇铃人出现三次超时登陆或于约定解聆时间无法与其取得联系的情况，将被加入摇领黑名单，谢谢理解。 </span></p>
+<p><span style="font-weight: 400;"> 若摇铃人出现三次超时登陆或于约定解聆时间无法与其取得联系的情况，将被加入摇铃黑名单，谢谢理解。 </span></p>
 <p> </p>
 <p><strong> 以下是解聆服务须知，请您仔细阅读，谢谢： </strong></p>
 <ol>
 <li> <em><em><span>摇铃人需尊重倾听者个人隐私，不得在解聆结束后向任何第三方转述、透露、或公开发布倾听者在解聆过程中提及的个人信息、隐私、及亲身经历。</span></em></em></li>
+<li><em><span style="font-weight: 400;">请摇铃人在解聆过程中请文明用语，尊重倾听者。若两次警告未果，倾听者有权利及时结束解聆。</span> </em></li>
 <li><em><span style="font-weight: 400;">平台不对倾听者的行为、言论、及解聆过程中的任何相关延伸领域承担责任。 </span> </em></li>
 <li><em> <span style="font-weight: 400;"> 解聆结束后，摇铃人与倾听者间解聆关系解除，平台不对倾听者和摇铃人私人间或单方面的协议承担任何形式的责任或义务。</span></em></li>
 </ol>
