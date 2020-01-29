@@ -12,6 +12,11 @@ time_dict = {
     "周五 6:00-7:00pm":17,"周五 7:00-8:00pm":18,"周五 8:00-9:00pm":19,"周五 9:00-10:00pm":20
 }
 
+bell_ringer_xls_dict = {
+    "application_time":0, "name":1, "email":2, "WID":3, "gender":4, "faculty":5, "topic":7,
+    "need":8, "condition":9, "availability":10, "other_info":11
+}
+
 # avail_after info starts after this colom in Listener.xls
 START_COL_AVAIL_AFTER = 6
 
@@ -42,7 +47,7 @@ class Person:
     # --> If we cannot match a bell_ringer with a listener, then return -1
     def find_listener(self, listeners):
         # Find the first matched time after the start_date
-        start_date = self.time + timedelta(days=1)
+        start_date = (self.application_time).date() + timedelta(days=1)
         start_weekday = start_date.isoweekday()
         # Reorder availability list so that the first element is the next potential time slot after start_weekend
         reordered_availability = self.availability[:]
@@ -164,17 +169,17 @@ def read_xls(file_name, is_listener = False, startLine = 1):
         else:
             # Bell Ringer
             info.append(Person
-                (   convert_float_to_datetime(sheet.cell_value(i, 0)),      #application_time
-                    str(sheet.cell_value(i, 1)),                            #Name
-                    str(sheet.cell_value(i, 3)),                            #WID
-                    convert_availability(sheet.cell_value(i, 13)),          #Availability 
-                    str(sheet.cell_value(i, 2)),                            #Email
-                    str(sheet.cell_value(i, 10)),                           #Topic
-                    str(sheet.cell_value(i, 4)),                            #gender
-                    convert_float_to_date(sheet.cell_value(i, 17)),         #time
-                    str(sheet.cell_value(i, 11)),                           #need
-                    str(sheet.cell_value(i, 12)),                           #condition
-                    str(sheet.cell_value(i, 14)),                           #other_info
+                (   convert_float_to_datetime(sheet.cell_value(i, bell_ringer_xls_dict["application_time"])),       #application_time
+                    str(sheet.cell_value(i, bell_ringer_xls_dict["name"])),                                         #Name
+                    str(sheet.cell_value(i, bell_ringer_xls_dict["WID"])),                                          #WID
+                    convert_availability(sheet.cell_value(i, bell_ringer_xls_dict["availability"])),                #Availability 
+                    str(sheet.cell_value(i, bell_ringer_xls_dict["email"])),                                        #Email
+                    str(sheet.cell_value(i, bell_ringer_xls_dict["topic"])),                                        #Topic
+                    # Optional arguments
+                    gender        = str(sheet.cell_value(i, bell_ringer_xls_dict["gender"])),                       #gender
+                    need          = str(sheet.cell_value(i, bell_ringer_xls_dict["need"])),                         #need
+                    condition     = str(sheet.cell_value(i, bell_ringer_xls_dict["condition"])),                    #condition
+                    other_info    = str(sheet.cell_value(i, bell_ringer_xls_dict["other_info"])),                   #other_info
                 )
             )                 
     return info
