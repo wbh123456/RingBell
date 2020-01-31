@@ -2,7 +2,9 @@ import xlrd
 from xlutils.copy import copy
 from datetime import datetime
 from datetime import date
+from datetime import time as dtime
 from datetime import timedelta
+from pytz import timezone
 
 time_dict = {
     "周一 6:00-7:00pm":1,"周一 7:00-8:00pm":2,"周一 8:00-9:00pm":3,"周一 9:00-10:00pm":4,
@@ -22,7 +24,7 @@ START_COL_AVAIL_AFTER = 6
 
 class Person:
     def __init__(self, application_time, name, WID, availability, email, topic, 
-                gender = "", time = "", need = "", condition = "", other_info = "",
+                gender = "", need = "", condition = "", other_info = "",
                 listener_num = "", avail_after = "", file_dir = ""):
         # mandatory variables
         self.application_time = application_time
@@ -33,7 +35,6 @@ class Person:
         self.email = email
         # optional varaibles
         self.gender = gender
-        self.time = time
         self.need = need
         self.condition = condition
         self.other_info = other_info
@@ -46,17 +47,28 @@ class Person:
     # --> If a listener has been selected, it will be moved to the end the the candidate list to lower its chance of being seleted again```
     # --> If we cannot match a bell_ringer with a listener, then return -1
     def find_listener(self, listeners):
-        # Find the first matched time after the start_date
-        start_date = (self.application_time).date() + timedelta(days=1)
+        # Check if the bell ringer can be matched on the same date
+        # Don't match any pairs within 1 hour of application time 
+        offset_num = 0
+        start_date = self.application_time.date()
+        if self.application_time.time() > dtime(20,0):
+            start_date = start_date + timedelta(days=1)
+        elif self.application_time.time() > dtime(19,0):
+            offset_num = 3
+        elif self.application_time.time() > dtime(18,0):
+            offset_num = 2
+        elif self.application_time.time() > dtime(17,0):
+            offset_num = 1
         start_weekday = start_date.isoweekday()
+        start_time_slot = 1 + (start_weekday - 1) * 4 + offset_num
         # Reorder availability list so that the first element is the next potential time slot after start_weekend
         reordered_availability = self.availability[:]
         for time_slot in self.availability:
-            weekday = (time_slot-1) // 4 + 1
-            if weekday >= start_weekday:
+            if time_slot >= start_time_slot:
                 break
             reordered_availability.pop(0)
             reordered_availability.append(time_slot)
+
         # Match a listener with the same availability
         continue_finding_listeners = True # Flag indicates if need to loop through listeners again
         loop_number = 0 # How many times it has looped
@@ -106,10 +118,10 @@ def match_all(listeners, bell_ringers):
             print("     Cannot find a Listener!")
             matching_result_list.append([b, -1, -1, -1])
         else:
-            print("     Bell Ringer: ", b.name)
-            print("     Listener:    ", matched_result[0].name)
-            print("     On Date:     ", matched_result[1])
-            print("     At Time:     ", matched_result[2])
+            print("     Bell Ringer:  ", b.name)
+            print("     Submitted on: ", b.application_time)
+            print("     Listener:     ", matched_result[0].name)
+            print("     At Time:      ", matched_result[1], matched_result[2])
             matching_result_list.append([b, matched_result[0], matched_result[1].isoformat(), matched_result[2]])
     return matching_result_list
 
@@ -133,6 +145,7 @@ def convert_float_to_datetime(float_time):
 
 def convert_float_to_date(float_time):
     return datetime.date(convert_float_to_datetime(float_time))
+
 #------------End of conversions------------
 
 # Read Listener or bellRinger from a xls file
@@ -168,8 +181,13 @@ def read_xls(file_name, is_listener = False, startLine = 1):
             )
         else:
             # Bell Ringer
+            # Get applicaiton time in toronto
+            app_time = convert_float_to_datetime(sheet.cell_value(i, bell_ringer_xls_dict["application_time"]))
+            application_time_china = timezone('Asia/Shanghai').localize(app_time)
+            application_time_toronto = application_time_china.astimezone(timezone('Canada/Eastern'))
+            # Construct Person instance
             info.append(Person
-                (   convert_float_to_datetime(sheet.cell_value(i, bell_ringer_xls_dict["application_time"])),       #application_time
+                (   application_time_toronto,                                                                       #application_time
                     str(sheet.cell_value(i, bell_ringer_xls_dict["name"])),                                         #Name
                     str(sheet.cell_value(i, bell_ringer_xls_dict["WID"])),                                          #WID
                     convert_availability(sheet.cell_value(i, bell_ringer_xls_dict["availability"])),                #Availability 
