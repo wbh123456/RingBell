@@ -15,7 +15,7 @@ time_dict = {
 }
 
 bell_ringer_xls_dict = {
-    "application_time":0, "name":1, "email":2, "WID":3, "gender":4, "faculty":5, "topic":7,
+    "application_time":0, "name":1, "email":2, "WID":3, "gender":4, "topic":6, "faculty":7,
     "need":8, "condition":9, "availability":10, "other_info":11
 }
 
