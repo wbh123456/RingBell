@@ -25,6 +25,7 @@ listener_xls_dict = {
 
 # avail_after info starts after this colom in Listener.xls
 START_COL_AVAIL_AFTER = 4
+DISABLE_FREEZING = False
 
 class Person:
     def __init__(self, application_time, name, availability, email, 
@@ -96,7 +97,7 @@ class Person:
                             continue
 
                         # Update matched listener's avail_after
-                        if not m.DISABLE_FREEZING:
+                        if not DISABLE_FREEZING:
                             rb = xlrd.open_workbook(listener.file_dir)
                             wb = copy(rb)
                             sheet = wb.get_sheet(0)
