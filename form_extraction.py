@@ -9,7 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 # from pyvirtualdisplay import Display
 script_dir = os.path.dirname(os.path.realpath(__file__)) #<-- absolute dir the script is in
-abs_path = script_dir + '\\Data\\'
+abs_path = script_dir + '/Data/'
 
 def get_options():
     chrome_options = webdriver.ChromeOptions()
