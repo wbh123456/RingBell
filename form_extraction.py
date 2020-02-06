@@ -76,4 +76,12 @@ def extract(is_listener):
     end = time.time()
     print("time: " + str(end - start))
 
-extract(is_listener = False)
+def organize_form():
+    #delete downloaded file
+    os.remove(abs_path + "oldForm.xls")
+    os.rename(abs_path + "newForm.xls", abs_path + "oldForm.xls")
+    os.rename(abs_path + "数据列表.xls", abs_path + "newForm.xls")
+    print("Successfully organizes the forms!")
+
+if __name__ == '__main__':
+    extract(is_listener = False)
