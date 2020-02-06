@@ -19,21 +19,25 @@ bell_ringer_xls_dict = {
     "need":8, "condition":9, "availability":10, "other_info":11
 }
 
+listener_xls_dict = {
+    "application_time":0, "email":1, "availability":2, "name":3
+}
+
 # avail_after info starts after this colom in Listener.xls
-START_COL_AVAIL_AFTER = 6
+START_COL_AVAIL_AFTER = 4
 
 class Person:
-    def __init__(self, application_time, name, WID, availability, email, topic, 
-                gender = "", need = "", condition = "", other_info = "",
+    def __init__(self, application_time, name, availability, email, 
+                WID = "", topic = "", gender = "", need = "", condition = "", other_info = "",
                 listener_num = "", avail_after = "", file_dir = ""):
         # mandatory variables
         self.application_time = application_time
         self.name = name
-        self.WID = WID
         self.availability = availability
-        self.topic = topic
         self.email = email
         # optional varaibles
+        self.WID = WID
+        self.topic = topic
         self.gender = gender
         self.need = need
         self.condition = condition
@@ -166,13 +170,15 @@ def read_xls(file_name, is_listener = False, startLine = 1):
                     cell = convert_float_to_date(cell)
                     avail_after_dict[index] = cell
             # Construct Person instance
+            # Get applicaiton time in toronto
+            app_time = convert_float_to_datetime(sheet.cell_value(i, listener_xls_dict["application_time"]))
+            application_time_china = timezone('Asia/Shanghai').localize(app_time)
+            application_time_toronto = application_time_china.astimezone(timezone('Canada/Eastern'))
             info.append(Person
-                (   convert_float_to_datetime(sheet.cell_value(i, 0)),   #application_time
-                    str(sheet.cell_value(i, 1)),                         #Name
-                    str(sheet.cell_value(i, 2)),                         #WID
-                    convert_availability(sheet.cell_value(i, 5)),        #Availability 
-                    str(sheet.cell_value(i, 3)),                         #Email
-                    str(sheet.cell_value(i, 4)),                         #Topic
+                (   application_time_toronto,
+                    str(sheet.cell_value(i, listener_xls_dict["name"])),
+                    convert_availability(sheet.cell_value(i, listener_xls_dict["availability"])), 
+                    str(sheet.cell_value(i, listener_xls_dict["email"])),                         
                     # Optional arguments
                     listener_num        = i,
                     avail_after         = avail_after_dict,
@@ -189,11 +195,11 @@ def read_xls(file_name, is_listener = False, startLine = 1):
             info.append(Person
                 (   application_time_toronto,                                                                       #application_time
                     str(sheet.cell_value(i, bell_ringer_xls_dict["name"])),                                         #Name
-                    str(sheet.cell_value(i, bell_ringer_xls_dict["WID"])),                                          #WID
                     convert_availability(sheet.cell_value(i, bell_ringer_xls_dict["availability"])),                #Availability 
                     str(sheet.cell_value(i, bell_ringer_xls_dict["email"])),                                        #Email
-                    str(sheet.cell_value(i, bell_ringer_xls_dict["topic"])),                                        #Topic
                     # Optional arguments
+                    WID           = str(sheet.cell_value(i, bell_ringer_xls_dict["WID"])),                          #WID
+                    topic         = str(sheet.cell_value(i, bell_ringer_xls_dict["topic"])),                        #Topic
                     gender        = str(sheet.cell_value(i, bell_ringer_xls_dict["gender"])),                       #gender
                     need          = str(sheet.cell_value(i, bell_ringer_xls_dict["need"])),                         #need
                     condition     = str(sheet.cell_value(i, bell_ringer_xls_dict["condition"])),                    #condition
