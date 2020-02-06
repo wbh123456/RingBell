@@ -96,11 +96,12 @@ class Person:
                             continue
 
                         # Update matched listener's avail_after
-                        rb = xlrd.open_workbook(listener.file_dir)
-                        wb = copy(rb)
-                        sheet = wb.get_sheet(0)
-                        sheet.write(listener.listener_num, time + START_COL_AVAIL_AFTER, matched_date)
-                        wb.save(listener.file_dir)
+                        if not m.DISABLE_FREEZING:
+                            rb = xlrd.open_workbook(listener.file_dir)
+                            wb = copy(rb)
+                            sheet = wb.get_sheet(0)
+                            sheet.write(listener.listener_num, time + START_COL_AVAIL_AFTER, matched_date)
+                            wb.save(listener.file_dir)
 
                         return (listener, matched_date, convert_enum_to_availabilty(time))
 

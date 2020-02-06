@@ -5,6 +5,7 @@ import os
 # Parameters
 DISABLE_EMAIL_SENDING = False
 GET_TEST_FORMS = False
+DISABLE_FREEZING = False
 
 #Get "ralative path"
 script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
