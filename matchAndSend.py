@@ -12,11 +12,12 @@ script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
 if not GET_TEST_FORMS:
     rel_path_newForm = "Data/newForm.xls"
     rel_path_oldForm = "Data/oldForm.xls"
+    rel_path_listeners = "Data/Listeners.xls"
 else:
     print("Getting test forms from examples!")
     rel_path_newForm = "example/newForm.xls"
     rel_path_oldForm = "example/oldForm.xls"
-rel_path_listeners = "Data/Listeners.xls"
+    rel_path_listeners = "example/Listeners.xls"
 abs_path_newForm = os.path.join(script_dir, rel_path_newForm)
 abs_path_oldForm = os.path.join(script_dir, rel_path_oldForm)
 abs_path_listeners = os.path.join(script_dir, rel_path_listeners)
