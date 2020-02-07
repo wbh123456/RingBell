@@ -1,15 +1,12 @@
 import BellRingMatch as m
 import gmailAuto as g
+import config
 import os
-
-# Parameters
-DISABLE_EMAIL_SENDING = False
-GET_TEST_FORMS = False
 
 def matchAndSend():
     #Get "relative path"
     script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
-    if not GET_TEST_FORMS:
+    if not config.GET_TEST_FORMS:
         rel_path_newForm = "Data/newForm.xls"
         rel_path_oldForm = "Data/oldForm.xls"
         rel_path_listeners = "Data/Listeners.xls"
@@ -52,7 +49,7 @@ def matchAndSend():
         br_content, l_content, title = g.generate_email_content(bell_ringer, listener, date_and_time)
 
         #Send Emails
-        if not DISABLE_EMAIL_SENDING:
+        if not config.DISABLE_EMAIL_SENDING:
             print("-->Sending email to Bell Ringer: " + bell_ringer.name + " at " + bell_ringer.email + " ... ")
             g.sendGmail(br_content, bell_ringer.email, title)
 
@@ -65,4 +62,5 @@ def matchAndSend():
             print("Email sending not enabled!")
 
 if __name__ == '__main__':
+    config.config(["",""])
     matchAndSend()
