@@ -39,6 +39,8 @@ def get_headless_options():
 def get_options():
     chrome_options = webdriver.ChromeOptions()
     prefs = {'download.default_directory' : abs_path}
+    chrome_options.headless = True
+    chrome_options.add_argument("--log-level=3")
     chrome_options.add_experimental_option('prefs', prefs)
     return chrome_options
 
