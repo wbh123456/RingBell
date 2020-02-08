@@ -45,6 +45,10 @@ def get_options():
     return chrome_options
 
 def extract(is_listener):
+    # If file already exits, delete it
+    if os.path.exists(abs_path + "数据列表.xls"):
+        os.remove(abs_path + "数据列表.xls")
+
     #form_extraction
     start = time.time()
     print("starting browser...")
