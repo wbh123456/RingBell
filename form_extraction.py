@@ -3,38 +3,13 @@ import os
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 # from pyvirtualdisplay import Display
 script_dir = os.path.dirname(os.path.realpath(__file__)) #<-- absolute dir the script is in
 abs_path = script_dir + '\\Data\\'
-
-# test code
-def test():
-    options = Options()
-    options.headless = True
-    
-    print("starting")
-    # we can now start Firefox and it will run inside the virtual display
-    browser = webdriver.Chrome(options=options)
-
-    # put the rest of our selenium code in a try/finally
-    # to make sure we always clean up at the end
-    try:
-        print("getting web")
-        browser.get('https://www.google.com')
-        print(browser.title) #this should print title
-
-    finally:
-        browser.quit()
-        print("done")
-
-# form_extraction headless
-def get_headless_options():
-    options = Options()
-    options.headless = True
-    prefs = {'download.default_directory' : abs_path}
-    options.add_experimental_option('prefs', prefs)
-    return options
 
 def get_options():
     chrome_options = webdriver.ChromeOptions()
@@ -45,39 +20,72 @@ def get_options():
     return chrome_options
 
 def extract(is_listener):
+    username_xpath = "/html/body/div[1]/div[1]/div/div[3]/div[2]/input"
+    pwd_xpath = "/html/body/div[1]/div[1]/div/div[4]/div/input"
+    login_button_xpath = ".//a[@onclick='askformLogin()']"
+    form_menu_id = "menu4603080002"
+    bell_ringer_form_xpath = ".//a[@href='/Survey/DataList.aspx?AppConfigID=4603080002&FormApplicationID=10244540001&FormCategoryID=10276160001&FormID=14461000001']"
+    download_button_id = "btnExport"
+
     # If file already exits, delete it
     if os.path.exists(abs_path + "数据列表.xls"):
         os.remove(abs_path + "数据列表.xls")
 
     #form_extraction
     start = time.time()
-    print("starting browser...")
+    print("Starting browser...")
     # we can now start Firefox and it will run inside the virtual display
     browser = webdriver.Chrome(chrome_options=get_options())
 
-    print("going to www.askform.cn/login ...")
+    print("Going to www.askform.cn/login ...")
     browser.get("https://www.askform.cn/login")
 
-    print("loggin in...")
-    browser.find_element_by_xpath("/html/body/div[1]/div[1]/div/div[3]/div[2]/input").send_keys("contact.listener@gmail.com")
-    browser.find_element_by_xpath("/html/body/div[1]/div[1]/div/div[4]/div/input").send_keys("iamyourlistener")
-    # on old website
-    # browser.find_element_by_id("emailOrTel").send_keys("contact.listener@gmail.com")
-    # browser.find_element_by_id("password").send_keys("iamyourlistener")
+    print("Loggin in...")
+    try:
+        element = WebDriverWait(browser, 10).until(
+            EC.visibility_of_element_located((By.XPATH, username_xpath))
+        )
+        element.send_keys("contact.listener@gmail.com")
 
-    browser.find_element_by_xpath(".//a[@onclick='askformLogin()']").click()
+        element = WebDriverWait(browser, 10).until(
+            EC.visibility_of_element_located((By.XPATH, pwd_xpath))
+        )
+        element.send_keys("iamyourlistener")
 
-    browser.find_element_by_id("menu4603080002").click()
-    if is_listener:
-        #this link in wrong!! Need to be changed in the future
-        browser.find_element_by_xpath(".//a[@href='/Survey/DataList.aspx?AppConfigID=4603080002&FormApplicationID=10801670001&FormCategoryID=10833290001&FormID=16128410001']").click()
-    else:
-        browser.find_element_by_xpath(".//a[@href='/Survey/DataList.aspx?AppConfigID=4603080002&FormApplicationID=10244540001&FormCategoryID=10276160001&FormID=14461000001']").click()
-    print("downloading...")
-    browser.find_element_by_id("btnExport").click()
+        element = WebDriverWait(browser, 10).until(
+            EC.element_to_be_clickable((By.XPATH, login_button_xpath))
+        )
+        element.click()
 
-    time.sleep(5)
-    browser.close()
+        print("Looking for form...")
+        element = WebDriverWait(browser, 10).until(
+            EC.element_to_be_clickable((By.ID, form_menu_id))
+        )
+        element.click()
+        
+        if is_listener:
+            #this link in wrong!! Need to be changed in the future
+            element = WebDriverWait(browser, 10).until(
+                EC.element_to_be_clickable((By.XPATH, ".//a[@href='/Survey/DataList.aspx?AppConfigID=4603080002&FormApplicationID=10801670001&FormCategoryID=10833290001&FormID=16128410001']"))
+            )
+            element.click()
+        else:
+            element = WebDriverWait(browser, 10).until(
+                EC.element_to_be_clickable((By.XPATH, bell_ringer_form_xpath))
+            )
+            element.click()
+
+        
+        print("Downloading...")
+        element = WebDriverWait(browser, 10).until(
+            EC.element_to_be_clickable((By.ID, download_button_id))
+        )
+        element.click()
+        time.sleep(5)
+        browser.close()
+
+    finally:
+        browser.quit()
 
     end = time.time()
     print("time: " + str(end - start))
