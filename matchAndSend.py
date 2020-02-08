@@ -3,6 +3,8 @@ import gmailAuto as g
 import config
 import os
 
+developer_list = {"Aaron":"aaronwang0407@gmail.com", "Danny":"dannyding123456@gmail.com", "Jaya":"jessicahu819@hotmail.com"}
+
 def matchAndSend():
     #Get "relative path"
     script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
@@ -46,18 +48,26 @@ def matchAndSend():
             date_and_time = date + " " + time
 
         #generate email contents
-        br_content, l_content, title = g.generate_email_content(bell_ringer, listener, date_and_time)
+        br_content, l_content, d_content, title = g.generate_email_content(bell_ringer, listener, date_and_time)
 
         #Send Emails
         if not config.DISABLE_EMAIL_SENDING:
+            # To Bell Ringer
             print("-->Sending email to Bell Ringer: " + bell_ringer.name + " at " + bell_ringer.email + " ... ")
             g.sendGmail(br_content, bell_ringer.email, title)
 
+            # To Listener
             if l_content != -1:
                 print("-->Sending email to Listener: " + listener.name + " at " + listener.email + " ... ")
                 g.sendGmail(l_content, listener.email, title)
             else:
                 print("Does not need to send email to Listener")
+            
+            # To developers
+            for item in developer_list.items():
+                print("-->Sending result to Developer: " + item[0] + " at: " + item[1] + " ... ")
+                g.sendGmail(d_content, item[1], title)
+
         else:
             print("Email sending not enabled!")
 

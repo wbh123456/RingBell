@@ -1,6 +1,7 @@
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from datetime import datetime
 import BellRingMatch as m
 import email_contents as c
 
@@ -70,4 +71,17 @@ def generate_email_content(bell_ringer, listener, time):
         title = succeed_title
     else:
         l_content = -1
-    return br_content,l_content,title
+
+     #------developer email content------
+    if listener != -1:
+        d_content = c.html_developer_content
+        d_content = d_content.replace("@X",bell_ringer.name,1)
+        d_content = d_content.replace("@X",bell_ringer.application_time.strftime("%m/%d/%Y, %H:%M:%S %Z"),1)
+        d_content = d_content.replace("@X",listener.name,1)
+        d_content = d_content.replace("@X",time,1)
+    else:
+        d_content = c.html_developer_content_fail
+        d_content = d_content.replace("@X",bell_ringer.name,1)
+        d_content = d_content.replace("@X",bell_ringer.application_time.strftime("%m/%d/%Y, %H:%M:%S %Z"),1)
+
+    return br_content, l_content, d_content,title

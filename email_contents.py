@@ -88,3 +88,32 @@ html_l_content = """
 </body>
 </html>
 """
+
+html_developer_content = """
+<p>线上解铃匹配到新的配对：</p>
+<ul>
+<li>摇铃人：
+<ul>
+<li>姓名: @X</li>
+<li>提交表格时间:@X</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>倾听者：
+<ul>
+<li>姓名：@X</li>
+</ul>
+</li>
+<li>匹配时间：@X</li>
+</ul>
+<p>&nbsp;</p>
+"""
+
+html_developer_content_fail = """
+<p>摇铃人未匹配到倾听者：</p>
+<ul>
+<li>姓名: @X</li>
+<li>提交表格时间:@X</li>
+</ul>
+"""

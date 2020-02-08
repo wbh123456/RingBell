@@ -31,6 +31,12 @@ def config(arg):
             GET_TEST_FORMS = True
             DISABLE_FREEZING = False
             return
+        elif arg[1] == "--test_examples_with_email":
+            print("Running in test_examples mode with sending email enabled")
+            DISABLE_EMAIL_SENDING = False
+            GET_TEST_FORMS = True
+            DISABLE_FREEZING = False
+            return
 
     print("Running in test_examples mode")
     DISABLE_EMAIL_SENDING = True
