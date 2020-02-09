@@ -44,8 +44,9 @@ class Person:
         self.condition = condition
         self.other_info = other_info
         self.listener_num = listener_num
-        # listener specific variable, a dictionary. The listener will be only available after this date in a time slot
-        self.avail_after = avail_after 
+        # listener specific variable 
+        # The listener will be only available after this date in a time slot
+        self.avail_after = avail_after # A dictionary {time value + START_COL_AVAIL_AFTER : available after date}
         self.file_dir = file_dir
 
     # Find proper listener for a bell_ringer
@@ -97,6 +98,7 @@ class Person:
                             continue
 
                         # Update matched listener's avail_after
+                        listener.avail_after[time + START_COL_AVAIL_AFTER] = matched_date
                         if not config.DISABLE_FREEZING:
                             rb = xlrd.open_workbook(listener.file_dir)
                             wb = copy(rb)
@@ -107,6 +109,9 @@ class Person:
                         return (listener, matched_date, convert_enum_to_availabilty(time))
 
             loop_number += 1
+            # Don't match after 2 weeks
+            if loop_number > 2:
+                break
         return -1
 
     def print_person(self):
