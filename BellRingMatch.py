@@ -24,6 +24,18 @@ listener_xls_dict = {
     "application_time":0, "email":1, "availability":2, "name":3
 }
 
+internal_testing_application_time_dict = {
+    "auto_tester1": datetime(2020,2,10,15, minute = 0),
+    "auto_tester2": datetime(2020,2,10,15, minute = 5),
+    "auto_tester3": datetime(2020,2,11,16, minute = 50),
+    "auto_tester4": datetime(2020,2,11,17, minute = 50),
+    "auto_tester5": datetime(2020,2,11,21, minute = 0),
+    "auto_tester6": datetime(2020,2,11,21, minute = 10),
+    "auto_tester7": datetime(2020,2,11,21, minute = 20),
+    "auto_tester8": datetime(2020,2,11,21, minute = 30),
+    "auto_tester9": datetime(2020,2,12,17, minute = 0),
+    "auto_tester10":datetime(2020,2,12,17, minute = 20),
+}
 # avail_after info starts after this colom in Listener.xls
 START_COL_AVAIL_AFTER = 4
 
@@ -199,6 +211,11 @@ def read_xls(file_name, is_listener = False, startLine = 1):
             app_time = convert_float_to_datetime(sheet.cell_value(i, bell_ringer_xls_dict["application_time"]))
             application_time_china = timezone('Asia/Shanghai').localize(app_time)
             application_time_toronto = application_time_china.astimezone(timezone('Canada/Eastern'))
+            # If running in internal testing mode, replace application by testing application time
+            if config.INTERNAL_TESTING:
+                application_time_toronto = internal_testing_application_time_dict[sheet.cell_value(i, bell_ringer_xls_dict["name"])]
+                application_time_toronto = timezone('Canada/Eastern').localize(application_time_toronto)
+
             # Construct Person instance
             info.append(Person
                 (   application_time_toronto,                                                                       #application_time
@@ -213,7 +230,7 @@ def read_xls(file_name, is_listener = False, startLine = 1):
                     condition     = str(sheet.cell_value(i, bell_ringer_xls_dict["condition"])),                    #condition
                     other_info    = str(sheet.cell_value(i, bell_ringer_xls_dict["other_info"])),                   #other_info
                 )
-            )                 
+            )               
     return info
 
 # Read new bell ringers from xls
