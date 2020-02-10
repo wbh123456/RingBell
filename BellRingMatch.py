@@ -109,8 +109,9 @@ class Person:
                         return (listener, matched_date, convert_enum_to_availabilty(time))
 
             loop_number += 1
-            # Don't match after 2 weeks
-            if loop_number > 2:
+            # Don't match after 2 weeks from about application time
+            # (actually 2 weeks from the first available bell ringer time_slot)
+            if loop_number >= 2:
                 break
         return -1
 
