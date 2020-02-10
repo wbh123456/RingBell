@@ -8,15 +8,22 @@ developer_list = {"Aaron":"aaronwang0407@gmail.com", "Danny":"dannyding123456@gm
 def matchAndSend():
     #Get "relative path"
     script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
-    if not config.GET_TEST_FORMS:
-        rel_path_newForm = "Data/newForm.xls"
-        rel_path_oldForm = "Data/oldForm.xls"
-        rel_path_listeners = "Data/Listeners.xls"
-    else:
+    if config.INTERNAL_TESTING:
+        print("Getting forms from internal_testing_data/!")
+        rel_path_newForm = "internal_testing_data/newForm.xls"
+        rel_path_oldForm = "internal_testing_data/oldForm.xls"
+        rel_path_listeners = "internal_testing_data/Listeners.xls"
+
+    elif config.GET_TEST_FORMS:
         print("Getting test forms from examples!")
         rel_path_newForm = "example/newForm.xls"
         rel_path_oldForm = "example/oldForm.xls"
         rel_path_listeners = "example/Listeners.xls"
+
+    else:
+        rel_path_newForm = "Data/newForm.xls"
+        rel_path_oldForm = "Data/oldForm.xls"
+        rel_path_listeners = "Data/Listeners.xls"
     abs_path_newForm = os.path.join(script_dir, rel_path_newForm)
     abs_path_oldForm = os.path.join(script_dir, rel_path_oldForm)
     abs_path_listeners = os.path.join(script_dir, rel_path_listeners)
