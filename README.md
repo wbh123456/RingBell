@@ -7,7 +7,7 @@ A program that automatically books appointments for the applicant who has regist
 A `bell ringer` is a person who has signed up for a mental health counselling service with *EmpoerChange Club* of *University of Toronto*. The person has to submit a registration form online in order to be considered as an applicant.
 
 #### Listener (counselor)
-A `listener` is a stuff or volunteer of the *EmpoerChange Club* who is eligible to provide the mental health counselling service.
+A `listener` is a staff or volunteer of the *EmpoerChange Club* who is eligible to provide the mental health counselling service.
 
 #### Matching Process
 Scheduled to run every 10 min:
