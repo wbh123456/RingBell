@@ -1,15 +1,15 @@
 # RingBell
-A program that automatically books appointments for the applicant who has registered a mental health conselling service. The program uses selenium to extract registration forms and is deployed on an Amazon EC2 Windows instance.
+A program that automatically books appointments for the applicant who has registered a mental health counselling service. The program uses selenium to extract registration forms and is deployed on an Amazon EC2 Windows instance.
 
-*This program is designed for online mental health conselling service with EmpoerChange Club of University of Toronto.*
+*This program is designed for online mental health conselling service with EmpowerChange Club of University of Toronto.*
 
-#### Bell Ringer (applicant)
-A `bell ringer` is a person who has signed up for a mental health counselling service with *EmpoerChange Club* of *University of Toronto*. The person has to submit a registration form online in order to be considered as an applicant.
+### Bell Ringer (applicant)
+A `bell ringer` is a person who has signed up for a mental health counselling service with *EmpowerChange Club*. The person has to submit a registration form online in order to be considered as an applicant.
 
-#### Listener (counselor)
-A `listener` is a staff or volunteer of the *EmpoerChange Club* who is eligible to provide the mental health counselling service.
+### Listener (counselor)
+A `listener` is a staff or volunteer of the *EmpowerChange Club* who is eligible to provide mental health counselling service.
 
-#### Matching Process
+### Matching Process
 Scheduled to run every 10 min:
   1. Login to https://www.askform.cn/ and extract `bell ringer` registration forms.
   2. Match any new `bell ringer` with an appropriate `listener` (based on service type and available time).
