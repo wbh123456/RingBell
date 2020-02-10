@@ -139,11 +139,13 @@ def match_all(listeners, bell_ringers):
         matched_result = b.find_listener(listeners)
         #print out result
         if matched_result == -1:
+            print("     Bell Ringer:  ", b.name)
+            print("     Submitted on: ", b.application_time.strftime("%Y-%d-%m, %H:%M:%S %Z"))
             print("     Cannot find a Listener!")
             matching_result_list.append([b, -1, -1, -1])
         else:
             print("     Bell Ringer:  ", b.name)
-            print("     Submitted on: ", b.application_time)
+            print("     Submitted on: ", b.application_time.strftime("%Y-%d-%m, %H:%M:%S %Z"))
             print("     Listener:     ", matched_result[0].name)
             print("     At Time:      ", matched_result[1], matched_result[2])
             matching_result_list.append([b, matched_result[0], matched_result[1].isoformat(), matched_result[2]])

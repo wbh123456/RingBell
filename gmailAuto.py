@@ -76,12 +76,12 @@ def generate_email_content(bell_ringer, listener, time):
     if listener != -1:
         d_content = c.html_developer_content
         d_content = d_content.replace("@X",bell_ringer.name,1)
-        d_content = d_content.replace("@X",bell_ringer.application_time.strftime("%m/%d/%Y, %H:%M:%S %Z"),1)
+        d_content = d_content.replace("@X",bell_ringer.application_time.strftime("%Y-%d-%m, %H:%M:%S %Z"),1)
         d_content = d_content.replace("@X",listener.name,1)
         d_content = d_content.replace("@X",time,1)
     else:
         d_content = c.html_developer_content_fail
         d_content = d_content.replace("@X",bell_ringer.name,1)
-        d_content = d_content.replace("@X",bell_ringer.application_time.strftime("%m/%d/%Y, %H:%M:%S %Z"),1)
+        d_content = d_content.replace("@X",bell_ringer.application_time.strftime("%Y-%d-%m, %H:%M:%S %Z"),1)
 
     return br_content, l_content, d_content,title
