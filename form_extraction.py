@@ -7,6 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import config
+import environment
 
 def get_options(download_path):
     chrome_options = webdriver.ChromeOptions()
@@ -49,12 +50,12 @@ def extract(is_listener = False):
         element = WebDriverWait(browser, 10).until(
             EC.visibility_of_element_located((By.XPATH, username_xpath))
         )
-        element.send_keys("contact.listener@gmail.com")
+        element.send_keys(environment.ASKFORM_LOGIN[0])
 
         element = WebDriverWait(browser, 10).until(
             EC.visibility_of_element_located((By.XPATH, pwd_xpath))
         )
-        element.send_keys("iamyourlistener")
+        element.send_keys(environment.ASKFORM_LOGIN[1])
 
         element = WebDriverWait(browser, 10).until(
             EC.element_to_be_clickable((By.XPATH, login_button_xpath))
