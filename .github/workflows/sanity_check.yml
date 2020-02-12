@@ -8,7 +8,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Checkout private environment
+      uses: actions/checkout@v2
+      with: 
+        repository: wbh123456/RingBell_environment
+        token: ${{ secrets.MY_GITHUB_TOKEN }}
+        path: env
+    - name: Combine two repos
+      run: |
+        mv env/environment.py environment.py
+
     - name: Set up Python 3.8
       uses: actions/setup-python@v1
       with:
@@ -20,13 +31,6 @@ jobs:
         pip install selenium
         pip install xlrd
         pip install xlutils
-    - name: Lint with flake8
-      run: |
-        pip install flake8
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with example forms
       run: |
         python matchAndSend.py --test_examples

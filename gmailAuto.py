@@ -4,11 +4,12 @@ from email.mime.multipart import MIMEMultipart
 from datetime import datetime
 import BellRingMatch as m
 import email_contents as c
+import environment
 
 mail_host = 'smtp.gmail.com'
-mail_user = 'empowerchange.peerlistener@gmail.com'
-mail_pass = 'EC123456789'
-sender = 'empowerchange.peerlistener@gmail.com'
+mail_user = environment.EMAIL_SENDER[0]
+mail_pass = environment.EMAIL_SENDER[1]
+sender = environment.EMAIL_SENDER[0]
 
 def sendGmail(html_content,receiver,title):
     message = MIMEMultipart('alternative')
