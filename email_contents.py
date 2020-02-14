@@ -9,7 +9,7 @@ html_br_content_success = """
 <p> </p>
 <p><strong> 您的解聆时间为：@X </strong></p>
 <p> </p>
-<p><span style="color: #800000;"> <strong> 距离您解聆时间开始前10分钟， 倾听者@X会通过邮箱 （peerlistener_X </strong> <a style="color: #800000;" href="mailto:XXXXX@gmail.com"> <strong> @gmail.com </strong> </a> <strong> ) 向您发送微信群聊二维码。（请务必在摇铃开始前检查您的邮箱！） </strong> </span></p>
+<p><span style="color: #800000;"> <strong> 距离您解聆时间开始前10分钟， 倾听者@X会通过邮箱 @X </strong> 向您发送微信群聊二维码。（请务必在摇铃开始前检查您的邮箱！） </strong> </span></p>
 <p> </p>
 <p><span style="text-decoration: underline;"> <span style="font-weight: 400;"> 若需要取消解聆，请务必第一时间通过邮箱联系倾听者，谢谢。 </span> </span></p>
 <p><span style="text-decoration: underline;"> <span style="font-weight: 400;"> 若摇铃时间开始后25分钟您仍未登陆群聊，此次线上解聆将被取消。 </span> </span></p>
