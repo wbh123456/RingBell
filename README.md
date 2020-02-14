@@ -1,3 +1,4 @@
+![Sanity Check](https://github.com/wbh123456/RingBell/workflows/Sanity%20Check/badge.svg)
 # RingBell
 A program that automatically books appointments for the applicant who has registered a mental health counselling service. The program uses selenium to extract registration forms and is deployed on an Amazon EC2 Windows instance.
 
