@@ -5,8 +5,9 @@ import sys
 
 def main():
     config.config(sys.argv)
-    form_extraction.extract(is_listener = False)
-    form_extraction.organize_form()
+    if not config.DISABLE_EXTRACT:
+        form_extraction.extract(is_listener = False)
+        form_extraction.organize_form()
     matchAndSend.matchAndSend()
 
 if __name__ == '__main__':

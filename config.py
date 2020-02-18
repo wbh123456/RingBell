@@ -5,11 +5,13 @@ def config(arg):
     global GET_EXAMPLE_FORMS
     global DISABLE_FREEZING
     global INTERNAL_TESTING
+    global DISABLE_EXTRACT
 
     # Default setting
     DISABLE_EMAIL_SENDING = True
     GET_EXAMPLE_FORMS = True
     DISABLE_FREEZING = True
+    DISABLE_EXTRACT = True
     INTERNAL_TESTING = False
 
     length = len(arg)
@@ -21,6 +23,7 @@ def config(arg):
             GET_EXAMPLE_FORMS = False
             DISABLE_FREEZING = False
             INTERNAL_TESTING = False
+            DISABLE_EXTRACT = False
             return
         elif arg[position] == "--internal_testing_mode":
             print("Running in internal testing mode!")
@@ -29,6 +32,7 @@ def config(arg):
             GET_EXAMPLE_FORMS = False
             DISABLE_FREEZING = False
             INTERNAL_TESTING = True
+            DISABLE_EXTRACT = False
             return
         # Set parameters
         elif arg[position] == "--disable_email_sending":
@@ -40,6 +44,10 @@ def config(arg):
         elif arg[position] == "--use_example":
             print("Use example")
             GET_EXAMPLE_FORMS = True
+            DISABLE_EXTRACT = True
+        elif arg[position] == "--disable_extract":
+            print("Disable form extraction ")
+            DISABLE_EXTRACT = True
 
         # If not on the list
         else:
