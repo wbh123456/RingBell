@@ -33,7 +33,7 @@ jobs:
         pip install xlutils
     - name: Test with example forms
       run: |
-        python matchAndSend.py --test_examples
+        python main.py --use_example --disable_email_sending
     - name: Run with email sending disabled
       run: |
         python main.py --disable_email_sending

@@ -14,7 +14,7 @@ def matchAndSend():
         rel_path_oldForm = "internal_testing_data/oldForm.xls"
         rel_path_listeners = "internal_testing_data/Listeners.xls"
 
-    elif config.GET_TEST_FORMS:
+    elif config.GET_EXAMPLE_FORMS:
         print("Getting test forms from examples!")
         rel_path_newForm = "example/newForm.xls"
         rel_path_oldForm = "example/oldForm.xls"

@@ -2,61 +2,48 @@ import sys
 
 def config(arg):
     global DISABLE_EMAIL_SENDING
-    global GET_TEST_FORMS
+    global GET_EXAMPLE_FORMS
     global DISABLE_FREEZING
     global INTERNAL_TESTING
 
-    length = len(arg) - 1
-    if (length >= 1):
-        if arg[1] == "--release_mode":
+    # Default setting
+    DISABLE_EMAIL_SENDING = True
+    GET_EXAMPLE_FORMS = True
+    DISABLE_FREEZING = True
+    INTERNAL_TESTING = False
+
+    length = len(arg)
+    for position in range(1,length):
+        # Set modes
+        if arg[position] == "--release_mode":
             print("Running in release mode!")
             DISABLE_EMAIL_SENDING = False
-            GET_TEST_FORMS = False
+            GET_EXAMPLE_FORMS = False
             DISABLE_FREEZING = False
             INTERNAL_TESTING = False
             return
-        elif arg[1] == "--internal_testing_mode":
+        elif arg[position] == "--internal_testing_mode":
             print("Running in internal testing mode!")
             print("Files will be extracted from testing files!")
             DISABLE_EMAIL_SENDING = True
-            GET_TEST_FORMS = False
+            GET_EXAMPLE_FORMS = False
             DISABLE_FREEZING = False
             INTERNAL_TESTING = True
             return
-        elif arg[1] == "--disable_email_sending":
-            print("Running with email sending disabled!")
+        # Set parameters
+        elif arg[position] == "--disable_email_sending":
+            print("Disable email")
             DISABLE_EMAIL_SENDING = True
-            GET_TEST_FORMS = False
-            DISABLE_FREEZING = False
-            INTERNAL_TESTING = False
-            return
-        elif arg[1] == "--disable_freezing":
-            print("Running with freezing disabled!")
-            DISABLE_EMAIL_SENDING = False
-            GET_TEST_FORMS = False
+        elif arg[position] == "--disable_freezing":
+            print("Disable freezing")
             DISABLE_FREEZING = True
-            INTERNAL_TESTING = False
-            return
-        elif arg[1] == "--test_examples":
-            print("Running in test_examples mode!")
-            DISABLE_EMAIL_SENDING = True
-            GET_TEST_FORMS = True
-            DISABLE_FREEZING = False
-            INTERNAL_TESTING = False
-            return
-        elif arg[1] == "--test_examples_with_email":
-            print("Running in test_examples mode with sending email enabled!")
-            DISABLE_EMAIL_SENDING = False
-            GET_TEST_FORMS = True
-            DISABLE_FREEZING = False
-            INTERNAL_TESTING = False
-            return
+        elif arg[position] == "--use_example":
+            print("Use example")
+            GET_EXAMPLE_FORMS = True
 
-    print("No arguments, disable email, freezing and get forms from examples!")
-    DISABLE_EMAIL_SENDING = True
-    GET_TEST_FORMS = True
-    DISABLE_FREEZING = True
-    INTERNAL_TESTING = False
+        # If not on the list
+        else:
+            raise ValueError('Invalid command line option', arg[position])
     return
 
 
