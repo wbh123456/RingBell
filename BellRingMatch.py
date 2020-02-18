@@ -35,6 +35,11 @@ internal_testing_application_time_dict = {
     "auto_tester8": datetime(2020,2,11,21, minute = 30),
     "auto_tester9": datetime(2020,2,12,17, minute = 0),
     "auto_tester10":datetime(2020,2,12,17, minute = 20),
+    "auto_tester11":datetime(2020,2,12,17, minute = 30),
+    "auto_tester12":datetime(2020,2,12,17, minute = 35),
+    "auto_tester13":datetime(2020,2,12,17, minute = 40),
+    "auto_tester14":datetime(2020,2,12,17, minute = 45),
+    "auto_tester15":datetime(2020,2,12,17, minute = 55)
 }
 # avail_after info starts after this colom in Listener.xls
 START_COL_AVAIL_AFTER = 4
@@ -140,12 +145,12 @@ def match_all(listeners, bell_ringers):
         #print out result
         if matched_result == -1:
             print("     Bell Ringer:  ", b.name)
-            print("     Submitted on: ", b.application_time.strftime("%Y-%d-%m, %H:%M:%S %Z"))
+            print("     Submitted on: ", b.application_time.strftime("%Y-%m-%d, %H:%M:%S %Z"))
             print("     Cannot find a Listener!")
             matching_result_list.append([b, -1, -1, -1])
         else:
             print("     Bell Ringer:  ", b.name)
-            print("     Submitted on: ", b.application_time.strftime("%Y-%d-%m, %H:%M:%S %Z"))
+            print("     Submitted on: ", b.application_time.strftime("%Y-%m-%d, %H:%M:%S %Z"))
             print("     Listener:     ", matched_result[0].name)
             print("     At Time:      ", matched_result[1], matched_result[2])
             matching_result_list.append([b, matched_result[0], matched_result[1].isoformat(), matched_result[2]])
