@@ -8,10 +8,11 @@ def config(arg):
     global DISABLE_EXTRACT
 
     # Default setting
-    DISABLE_EMAIL_SENDING = True
-    GET_EXAMPLE_FORMS = True
-    DISABLE_FREEZING = True
-    DISABLE_EXTRACT = True
+    DISABLE_EMAIL_SENDING = True #Dangerous parameter, default to disabled
+    GET_EXAMPLE_FORMS = False
+    DISABLE_FREEZING = False
+    DISABLE_EXTRACT = False
+
     INTERNAL_TESTING = False
 
     length = len(arg)
@@ -38,6 +39,9 @@ def config(arg):
         elif arg[position] == "--disable_email_sending":
             print("Disable email")
             DISABLE_EMAIL_SENDING = True
+        elif arg[position] == "--enable_email_sending":
+            print("ENABLE EMAIL SENDING!!!")
+            DISABLE_EMAIL_SENDING = False
         elif arg[position] == "--disable_freezing":
             print("Disable freezing")
             DISABLE_FREEZING = True
