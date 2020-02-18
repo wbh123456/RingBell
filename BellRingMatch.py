@@ -41,13 +41,11 @@ internal_testing_application_time_dict = {
     "auto_tester14":datetime(2020,2,12,17, minute = 45),
     "auto_tester15":datetime(2020,2,12,17, minute = 55)
 }
-# avail_after info starts after this colom in Listener.xls
-START_COL_AVAIL_AFTER = 4
 
 class Person:
     def __init__(self, application_time, name, availability, email, 
                 WID = "", topic = "", gender = "", need = "", condition = "", other_info = "",
-                listener_num = "", avail_after = "", file_dir = ""):
+                listener_num = "", avail_after = "", db_id = ""):
         # mandatory variables
         self.application_time = application_time
         self.name = name
@@ -63,13 +61,13 @@ class Person:
         self.listener_num = listener_num
         # listener specific variable 
         # The listener will be only available after this date in a time slot
-        self.avail_after = avail_after # A dictionary {time value + START_COL_AVAIL_AFTER : available after date}
-        self.file_dir = file_dir
+        self.avail_after = avail_after # A dictionary {time value : available after date}
+        self.db_id = db_id
 
     # Find proper listener for a bell_ringer
     # --> If a listener has been selected, it will be moved to the end the the candidate list to lower its chance of being seleted again```
     # --> If we cannot match a bell_ringer with a listener, then return -1
-    def find_listener(self, listeners):
+    def find_listener(self, listeners, listener_collection):
         # Check if the bell ringer can be matched on the same date
         # Don't match any pairs within 1 hour of application time 
         offset_num = 0
@@ -109,19 +107,19 @@ class Person:
                         matched_date = start_date + timedelta(days = delta_days)
 
                         # Check is the listener is available ( if listener is already busy on this day)
-                        if (time + START_COL_AVAIL_AFTER in listener.avail_after and
-                            matched_date <= listener.avail_after[time + START_COL_AVAIL_AFTER] ):
+                        if (str(time) in listener.avail_after and
+                            matched_date <= listener.avail_after[str(time)] ):
                             continue_finding_listeners = True
                             continue
 
                         # Update matched listener's avail_after
-                        listener.avail_after[time + START_COL_AVAIL_AFTER] = matched_date
+                        listener.avail_after[str(time)] = matched_date
                         if not config.DISABLE_FREEZING:
-                            rb = xlrd.open_workbook(listener.file_dir)
-                            wb = copy(rb)
-                            sheet = wb.get_sheet(0)
-                            sheet.write(listener.listener_num, time + START_COL_AVAIL_AFTER, matched_date)
-                            wb.save(listener.file_dir)
+                            listener_collection.update(
+                                {'_id':listener.db_id},
+                                {"$set":
+                                    {"avail_after." + str(time): datetime.combine(matched_date,dtime(0,0))}
+                                })
 
                         return (listener, matched_date, convert_enum_to_availabilty(time))
 
@@ -137,11 +135,11 @@ class Person:
 
 #Match all bell ringers with proper listeners
 #result is in the format [[bell_ringer, matched_listener, date, time], [bell_ringer, -1, -1, -1], ...]
-def match_all(listeners, bell_ringers):
+def match_all(listeners, bell_ringers, listener_collection):
     matching_result_list = [] 
     for b in bell_ringers:
         print("-->Matching Result:")
-        matched_result = b.find_listener(listeners)
+        matched_result = b.find_listener(listeners, listener_collection)
         #print out result
         if matched_result == -1:
             print("     Bell Ringer:  ", b.name)
@@ -179,6 +177,34 @@ def convert_float_to_date(float_time):
 
 #------------End of conversions------------
 
+# Add new listener list in database
+def add_listeners_to_database(listener_form, listener_collection):
+    listeners = read_xls(listener_form, is_listener=True)
+    for l in listeners:
+        if l.application_time == '' or l.name == '':
+            raise ValueError('Listener application time or name cannot be blank')
+        id = l.application_time.strftime("%Y-%m-%d, %H:%M:%S") + l.name
+        listener_doc = {'_id':id,'application time':l.application_time, 'name':l.name, 
+                        'availability':l.availability, 'email':l.email, 'avail_after' : {}}
+        listener_collection.insert_one(listener_doc)
+
+def get_listeners_from_database(listener_collection):
+    listener_docs = listener_collection.find()
+    listener_list = []
+    for l in listener_docs:
+        application_time_UTC = timezone('UTC').localize(l['application time'])
+        application_time_toronto = application_time_UTC.astimezone(timezone('Canada/Eastern'))
+        listener_list.append(Person
+            (   application_time_toronto,
+                l["name"],
+                l["availability"], 
+                l["email"],
+                avail_after = l['avail_after'],
+                db_id = l['_id']
+            )
+        )
+    return listener_list
+
 # Read Listener or bellRinger from a xls file
 def read_xls(file_name, is_listener = False, startLine = 1):
     wb = xlrd.open_workbook(file_name)
@@ -186,16 +212,6 @@ def read_xls(file_name, is_listener = False, startLine = 1):
     info = []
     for i in range(startLine, sheet.nrows):
         if is_listener:
-            # get avail_after_dict
-            avail_after_dict = {}
-            for offset in range(1,21):  
-                index = offset + START_COL_AVAIL_AFTER
-                if index >= sheet.ncols:
-                    break
-                cell = sheet.cell_value(i, index)
-                if cell != "":
-                    cell = convert_float_to_date(cell)
-                    avail_after_dict[index] = cell
             # Construct Person instance
             # Get applicaiton time in toronto
             app_time = convert_float_to_datetime(sheet.cell_value(i, listener_xls_dict["application_time"]))
@@ -208,8 +224,6 @@ def read_xls(file_name, is_listener = False, startLine = 1):
                     str(sheet.cell_value(i, listener_xls_dict["email"])),                         
                     # Optional arguments
                     listener_num        = i,
-                    avail_after         = avail_after_dict,
-                    file_dir            = file_name
                 )
             )
         else:

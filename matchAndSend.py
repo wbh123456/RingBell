@@ -2,6 +2,8 @@ import BellRingMatch as m
 import gmailAuto as g
 import config
 import os
+import environment
+import pymongo
 
 developer_list = {"Aaron":"aaronwang0407@gmail.com", "Danny":"dannyding123456@gmail.com", "Jaya":"jessicahu819@hotmail.com"}
 
@@ -30,8 +32,14 @@ def matchAndSend():
 
     #---------------------------------------------extract bell ringers and listeners------------------------------------------------------------
     # bellRingers = m.read_xls('Data/newForm.xls')
+
+    client = pymongo.MongoClient(environment.MONGO_URL)
+    db = client.RingBellDB
+    listener_collection = db['test_listener_collection']
+
     bellRingers = m.read_new_ringer(abs_path_newForm, abs_path_oldForm)
-    listeners = m.read_listener(abs_path_listeners)
+    listeners = m.get_listeners_from_database(listener_collection)
+
     print("-->new bell ringers: ")
     for i in bellRingers:
         i.print_person()
@@ -40,7 +48,7 @@ def matchAndSend():
         i.print_person()
 
     #------------------------------------------------match bell rings and listeners---------------------------------------------------------------
-    matching_result_list = m.match_all(listeners, bellRingers)
+    matching_result_list = m.match_all(listeners, bellRingers, listener_collection)
 
     #----------------------------------------------------------send gmail-------------------------------------------------------------------------
 
