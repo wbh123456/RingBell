@@ -6,12 +6,14 @@ def config(arg):
     global DISABLE_FREEZING
     global INTERNAL_TESTING
     global DISABLE_EXTRACT
+    global ADD_LISTENERS
 
     # Default setting
     DISABLE_EMAIL_SENDING = True #Dangerous parameter, default to disabled
     GET_EXAMPLE_FORMS = False
     DISABLE_FREEZING = False
     DISABLE_EXTRACT = False
+    ADD_LISTENERS = False
 
     INTERNAL_TESTING = False
 
@@ -25,15 +27,17 @@ def config(arg):
             DISABLE_FREEZING = False
             INTERNAL_TESTING = False
             DISABLE_EXTRACT = False
+            ADD_LISTENERS = False
             return
         elif arg[position] == "--internal_testing_mode":
             print("Running in internal testing mode!")
             print("Files will be extracted from testing files!")
             DISABLE_EMAIL_SENDING = True
             GET_EXAMPLE_FORMS = False
-            DISABLE_FREEZING = False
+            DISABLE_FREEZING = True
             INTERNAL_TESTING = True
             DISABLE_EXTRACT = False
+            ADD_LISTENERS = False
             return
         # Set parameters
         elif arg[position] == "--disable_email_sending":
@@ -52,6 +56,10 @@ def config(arg):
         elif arg[position] == "--disable_extract":
             print("Disable form extraction ")
             DISABLE_EXTRACT = True
+        elif arg[position] == "--add_listeners":
+            print("Adding listeners")
+            ADD_LISTENERS = True
+
 
         # If not on the list
         else:

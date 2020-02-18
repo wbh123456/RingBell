@@ -31,12 +31,20 @@ def matchAndSend():
     abs_path_listeners = os.path.join(script_dir, rel_path_listeners)
 
     #---------------------------------------------extract bell ringers and listeners------------------------------------------------------------
-    # bellRingers = m.read_xls('Data/newForm.xls')
-
+    # Establish connection to database
     client = pymongo.MongoClient(environment.MONGO_URL)
     db = client.RingBellDB
-    listener_collection = db['test_listener_collection']
+    if config.INTERNAL_TESTING:
+        listener_collection = db['internal_testing_listener_collection']
+    elif config.GET_EXAMPLE_FORMS:
+        listener_collection = db['example_listener_collection']
+    else:
+        listener_collection = db['test_listener_collection']
 
+    if config.ADD_LISTENERS:
+        m.add_listeners_to_database(abs_path_listeners, listener_collection)
+
+    # Get Listeners and BellRingers
     bellRingers = m.read_new_ringer(abs_path_newForm, abs_path_oldForm)
     listeners = m.get_listeners_from_database(listener_collection)
 

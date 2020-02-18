@@ -131,7 +131,7 @@ class Person:
         return -1
 
     def print_person(self):
-        print("name =", self.name,"; Wechat ID =", self.WID, "; Email =", self.email)
+        print("name = ", self.name, "; Email = ", self.email)
 
 #Match all bell ringers with proper listeners
 #result is in the format [[bell_ringer, matched_listener, date, time], [bell_ringer, -1, -1, -1], ...]
@@ -187,6 +187,9 @@ def add_listeners_to_database(listener_form, listener_collection):
         listener_doc = {'_id':id,'application time':l.application_time, 'name':l.name, 
                         'availability':l.availability, 'email':l.email, 'avail_after' : {}}
         listener_collection.insert_one(listener_doc)
+        l.print_person()
+    
+    raise SystemExit("Successfully added all listeners to database, stop the program")
 
 def get_listeners_from_database(listener_collection):
     listener_docs = listener_collection.find()
