@@ -19,7 +19,7 @@ def get_options(download_path):
 
 def extract(is_listener = False):
     script_dir = os.path.dirname(os.path.realpath(__file__)) #<-- absolute dir the script is in
-    if config.INTERNAL_TESTING:
+    if config.MATCHING_ALGORITHM_TESTING:
         data_abs_path = os.path.join(script_dir, "internal_testing_data/")
     else:
         data_abs_path = os.path.join(script_dir, "Data/")

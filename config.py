@@ -4,9 +4,11 @@ def config(arg):
     global DISABLE_EMAIL_SENDING
     global GET_EXAMPLE_FORMS
     global DISABLE_FREEZING
-    global INTERNAL_TESTING
+    global MATCHING_ALGORITHM_TESTING
     global DISABLE_EXTRACT
     global ADD_LISTENERS
+    global DISABLE_ADD_NEW_BELLRINGER
+    global INTERNAL_TESTING
 
     # Default setting
     DISABLE_EMAIL_SENDING = True #Dangerous parameter, default to disabled
@@ -14,7 +16,9 @@ def config(arg):
     DISABLE_FREEZING = False
     DISABLE_EXTRACT = False
     ADD_LISTENERS = False
+    DISABLE_ADD_NEW_BELLRINGER = False
 
+    MATCHING_ALGORITHM_TESTING = False
     INTERNAL_TESTING = False
 
     length = len(arg)
@@ -25,20 +29,26 @@ def config(arg):
             DISABLE_EMAIL_SENDING = False
             GET_EXAMPLE_FORMS = False
             DISABLE_FREEZING = False
-            INTERNAL_TESTING = False
+            MATCHING_ALGORITHM_TESTING = False
             DISABLE_EXTRACT = False
             ADD_LISTENERS = False
+            DISABLE_ADD_NEW_BELLRINGER = False
+            INTERNAL_TESTING = False
             return
-        elif arg[position] == "--internal_testing_mode":
-            print("Running in internal testing mode!")
-            print("Files will be extracted from testing files!")
+        elif arg[position] == "--matching_algorithm_testing_mode":
+            print("Running in matching algorithm testing mode!")
             DISABLE_EMAIL_SENDING = True
             GET_EXAMPLE_FORMS = False
             DISABLE_FREEZING = True
-            INTERNAL_TESTING = True
-            DISABLE_EXTRACT = False
+            MATCHING_ALGORITHM_TESTING = True
+            DISABLE_EXTRACT = True
             ADD_LISTENERS = False
-            return
+            DISABLE_ADD_NEW_BELLRINGER = True
+            INTERNAL_TESTING = False
+        elif arg[position] == "--internal_testing_mode":
+            print("Running in internal testing mode")
+            INTERNAL_TESTING = True
+            
         # Set parameters
         elif arg[position] == "--disable_email_sending":
             print("Disable email")

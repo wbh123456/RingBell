@@ -16,6 +16,12 @@ def matchAndSend():
         rel_path_oldForm = "internal_testing_data/oldForm.xls"
         rel_path_listeners = "internal_testing_data/Listeners.xls"
 
+    elif config.MATCHING_ALGORITHM_TESTING:
+        print("Getting forms from matching_algorithm_testing/!")
+        rel_path_newForm = "matching_algorithm_testing_data/newForm.xls"
+        rel_path_oldForm = "matching_algorithm_testing_data/oldForm.xls"
+        rel_path_listeners = "matching_algorithm_testing_data/Listeners.xls"
+
     elif config.GET_EXAMPLE_FORMS:
         print("Getting test forms from examples!")
         rel_path_newForm = "example/newForm.xls"
@@ -34,7 +40,10 @@ def matchAndSend():
     # Establish connection to database
     client = pymongo.MongoClient(environment.MONGO_URL)
     db = client.RingBellDB
-    if config.INTERNAL_TESTING:
+    if config.MATCHING_ALGORITHM_TESTING:
+        listener_collection = db['algorithm_testing_listener_collection']
+        bellringer_collection = db['algorithm_testing_bellringer_collection']
+    elif config.INTERNAL_TESTING:
         listener_collection = db['internal_testing_listener_collection']
         bellringer_collection = db['internal_testing_bellringer_collection']
     elif config.GET_EXAMPLE_FORMS:
@@ -52,7 +61,8 @@ def matchAndSend():
     listeners = m.get_listeners_from_database(listener_collection)
 
     #Update bell ringers to database
-    m.add_bellringers_to_database(bellRingers, bellringer_collection)
+    if not config.DISABLE_ADD_NEW_BELLRINGER:
+        m.add_bellringers_to_database(bellRingers, bellringer_collection)
 
     print("-->new bell ringers: ")
     for i in bellRingers:

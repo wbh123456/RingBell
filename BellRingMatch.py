@@ -262,8 +262,8 @@ def read_xls(file_name, is_listener = False, startLine = 1):
             app_time = convert_float_to_datetime(sheet.cell_value(i, bell_ringer_xls_dict["application_time"]))
             application_time_china = timezone('Asia/Shanghai').localize(app_time)
             application_time_toronto = application_time_china.astimezone(timezone('Canada/Eastern'))
-            # If running in internal testing mode, replace application by testing application time
-            if config.INTERNAL_TESTING:
+            # If running in algorithm matching testing mode, replace application by testing application time
+            if config.MATCHING_ALGORITHM_TESTING:
                 application_time_toronto = internal_testing_application_time_dict[sheet.cell_value(i, bell_ringer_xls_dict["name"])]
                 application_time_toronto = timezone('Canada/Eastern').localize(application_time_toronto)
             name = str(sheet.cell_value(i, bell_ringer_xls_dict["name"]))

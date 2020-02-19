@@ -31,9 +31,6 @@ jobs:
         pip install selenium
         pip install xlrd
         pip install xlutils
-    - name: Test with example forms
+    - name: Run matching algorithm test
       run: |
-        python main.py --use_example --disable_email_sending
-    - name: Run with email sending disabled
-      run: |
-        python main.py --disable_email_sending
+        python main.py --matching_algorithm_testing_mode
