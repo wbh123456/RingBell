@@ -208,6 +208,33 @@ def get_listeners_from_database(listener_collection):
         )
     return listener_list
 
+def get_new_bellringer(bellringer_form, bellringer_collection):
+    print("Getting new bell ringers ...")
+    all_bellringers = read_xls(bellringer_form)
+    new_bellringers = []
+    for br in all_bellringers:
+        if bellringer_collection.find({'_id':br.db_id}).count() == 0:
+            new_bellringers.append(br)
+            print("   Found new bell ringer:")
+            br.print_person()
+    if len(new_bellringers) == 0:
+        print(    "Does not find any new bell ringer!")
+    return new_bellringers
+
+def add_bellringers_to_database(bellringers, bellringer_collection):
+    print('Add any new bell ringers to database ...')
+    for br in bellringers:
+        if br.application_time == '' or br.name == '':
+            raise ValueError('Bellringer application time or name cannot be blank')
+        id = br.application_time.strftime("%Y-%m-%d, %H:%M:%S") + br.name
+        br_doc = {'_id':id,'application time':br.application_time, 'name':br.name, 
+                    'availability':br.availability, 'email':br.email, 'WID' : br.WID,
+                    'topic':br.topic, 'gender':br.gender, 'need':br.need, 'condition':br.condition,
+                    'other_info':br.other_info
+                    }
+        bellringer_collection.insert_one(br_doc)
+
+
 # Read Listener or bellRinger from a xls file
 def read_xls(file_name, is_listener = False, startLine = 1):
     wb = xlrd.open_workbook(file_name)
@@ -239,11 +266,12 @@ def read_xls(file_name, is_listener = False, startLine = 1):
             if config.INTERNAL_TESTING:
                 application_time_toronto = internal_testing_application_time_dict[sheet.cell_value(i, bell_ringer_xls_dict["name"])]
                 application_time_toronto = timezone('Canada/Eastern').localize(application_time_toronto)
+            name = str(sheet.cell_value(i, bell_ringer_xls_dict["name"]))
 
             # Construct Person instance
             info.append(Person
                 (   application_time_toronto,                                                                       #application_time
-                    str(sheet.cell_value(i, bell_ringer_xls_dict["name"])),                                         #Name
+                    name,                                                                                           #Name
                     convert_availability(sheet.cell_value(i, bell_ringer_xls_dict["availability"])),                #Availability 
                     str(sheet.cell_value(i, bell_ringer_xls_dict["email"])),                                        #Email
                     # Optional arguments
@@ -253,6 +281,7 @@ def read_xls(file_name, is_listener = False, startLine = 1):
                     need          = str(sheet.cell_value(i, bell_ringer_xls_dict["need"])),                         #need
                     condition     = str(sheet.cell_value(i, bell_ringer_xls_dict["condition"])),                    #condition
                     other_info    = str(sheet.cell_value(i, bell_ringer_xls_dict["other_info"])),                   #other_info
+                    db_id         = application_time_toronto.strftime("%Y-%m-%d, %H:%M:%S") + name
                 )
             )               
     return info

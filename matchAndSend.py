@@ -36,17 +36,23 @@ def matchAndSend():
     db = client.RingBellDB
     if config.INTERNAL_TESTING:
         listener_collection = db['internal_testing_listener_collection']
+        bellringer_collection = db['internal_testing_bellringer_collection']
     elif config.GET_EXAMPLE_FORMS:
         listener_collection = db['example_listener_collection']
+        bellringer_collection = db['example_bellringer_collection']
     else:
         listener_collection = db['test_listener_collection']
+        bellringer_collection = db['test_bellringer_collection']
 
     if config.ADD_LISTENERS:
         m.add_listeners_to_database(abs_path_listeners, listener_collection)
 
     # Get Listeners and BellRingers
-    bellRingers = m.read_new_ringer(abs_path_newForm, abs_path_oldForm)
+    bellRingers = m.get_new_bellringer(abs_path_newForm, bellringer_collection)
     listeners = m.get_listeners_from_database(listener_collection)
+
+    #Update bell ringers to database
+    m.add_bellringers_to_database(bellRingers, bellringer_collection)
 
     print("-->new bell ringers: ")
     for i in bellRingers:
