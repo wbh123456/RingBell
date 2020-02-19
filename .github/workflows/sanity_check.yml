@@ -31,6 +31,7 @@ jobs:
         pip install selenium
         pip install xlrd
         pip install xlutils
+        pip install pymongo
     - name: Run matching algorithm test
       run: |
         python main.py --matching_algorithm_testing_mode
