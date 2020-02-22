@@ -27,24 +27,14 @@ def config(arg):
         if arg[position] == "--release_mode":
             print("Running in release mode!")
             DISABLE_EMAIL_SENDING = False
-            GET_EXAMPLE_FORMS = False
-            DISABLE_FREEZING = False
-            MATCHING_ALGORITHM_TESTING = False
-            DISABLE_EXTRACT = False
-            ADD_LISTENERS = False
-            DISABLE_ADD_NEW_BELLRINGER = False
-            INTERNAL_TESTING = False
             return
         elif arg[position] == "--matching_algorithm_testing_mode":
             print("Running in matching algorithm testing mode!")
-            DISABLE_EMAIL_SENDING = True
-            GET_EXAMPLE_FORMS = False
             DISABLE_FREEZING = True
             MATCHING_ALGORITHM_TESTING = True
             DISABLE_EXTRACT = True
-            ADD_LISTENERS = False
             DISABLE_ADD_NEW_BELLRINGER = True
-            INTERNAL_TESTING = False
+
         elif arg[position] == "--internal_testing_mode":
             print("Running in internal testing mode")
             INTERNAL_TESTING = True
