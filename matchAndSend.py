@@ -57,14 +57,18 @@ def matchAndSend():
         m.add_listeners_to_database(abs_path_listeners, listener_collection)
 
     # Get Listeners and BellRingers
-    bellRingers = m.get_new_bellringer(abs_path_newForm, bellringer_collection)
+    if config.MATCHING_ALGORITHM_TESTING:
+        bellRingers = m.get_bellringer_from_database(bellringer_collection)
+    else:
+        bellRingers = m.get_new_bellringer(abs_path_newForm, bellringer_collection)
+        # Update bell ringers to database
+        if not config.DISABLE_ADD_NEW_BELLRINGER:
+            m.add_bellringers_to_database(bellRingers, bellringer_collection)
+
     listeners = m.get_listeners_from_database(listener_collection)
 
-    #Update bell ringers to database
-    if not config.DISABLE_ADD_NEW_BELLRINGER:
-        m.add_bellringers_to_database(bellRingers, bellringer_collection)
 
-    print("-->new bell ringers: ")
+    print("-->Bell Ringers: ")
     for i in bellRingers:
         i.print_person()
     print("-->Listeners:")

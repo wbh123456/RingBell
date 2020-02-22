@@ -202,11 +202,36 @@ def get_listeners_from_database(listener_collection):
                 l["name"],
                 l["availability"], 
                 l["email"],
+
                 avail_after = l['avail_after'],
                 db_id = l['_id']
             )
         )
     return listener_list
+
+def get_bellringer_from_database(bellringer_collection):
+    print("Getting all bell ringers from databse ...")
+    bellringer_docs = bellringer_collection.find()
+    bellringer_list = []
+    for l in bellringer_docs:
+        application_time_UTC = timezone('UTC').localize(l['application time'])
+        application_time_toronto = application_time_UTC.astimezone(timezone('Canada/Eastern'))
+        bellringer_list.append(Person
+            (   application_time_toronto,
+                l["name"],
+                l["availability"], 
+                l["email"],
+
+                WID = l["WID"],
+                topic = l["topic"],
+                gender = l["gender"], 
+                need = l["need"], 
+                condition = l["condition"],
+                other_info = l["other_info"]
+            )
+        )
+    return bellringer_list
+
 
 def get_new_bellringer(bellringer_form, bellringer_collection):
     print("Getting new bell ringers ...")
@@ -227,10 +252,17 @@ def add_bellringers_to_database(bellringers, bellringer_collection):
         if br.application_time == '' or br.name == '':
             raise ValueError('Bellringer application time or name cannot be blank')
         id = br.application_time.strftime("%Y-%m-%d, %H:%M:%S") + br.name
-        br_doc = {'_id':id,'application time':br.application_time, 'name':br.name, 
-                    'availability':br.availability, 'email':br.email, 'WID' : br.WID,
-                    'topic':br.topic, 'gender':br.gender, 'need':br.need, 'condition':br.condition,
-                    'other_info':br.other_info
+        br_doc = {  '_id':                          id,
+                    'application time':             br.application_time, 
+                    'name':                         br.name, 
+                    'availability':                 br.availability, 
+                    'email':                        br.email, 
+                    'WID' :                         br.WID,
+                    'topic':                        br.topic, 
+                    'gender':                       br.gender, 
+                    'need':                         br.need, 
+                    'condition':                    br.condition,
+                    'other_info':                   br.other_info
                     }
         bellringer_collection.insert_one(br_doc)
 
