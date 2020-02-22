@@ -203,7 +203,7 @@ def get_listeners_from_database(listener_collection):
                 l["availability"], 
                 l["email"],
 
-                avail_after = l['avail_after'],
+                avail_after = l['avail_after'].date(),
                 db_id = l['_id']
             )
         )
