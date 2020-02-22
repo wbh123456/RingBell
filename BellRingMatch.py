@@ -197,13 +197,17 @@ def get_listeners_from_database(listener_collection):
     for l in listener_docs:
         application_time_UTC = timezone('UTC').localize(l['application time'])
         application_time_toronto = application_time_UTC.astimezone(timezone('Canada/Eastern'))
+        avail_after_date = {}
+        for dt in l['avail_after'].items():
+            avail_after_date[dt[0]] = dt[1].date()
+
         listener_list.append(Person
             (   application_time_toronto,
                 l["name"],
                 l["availability"], 
                 l["email"],
 
-                avail_after = l['avail_after'].date(),
+                avail_after = avail_after_date,
                 db_id = l['_id']
             )
         )
