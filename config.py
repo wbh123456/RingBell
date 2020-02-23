@@ -59,7 +59,10 @@ def config(arg):
         elif arg[position] == "--add_listeners":
             print("Adding listeners")
             ADD_LISTENERS = True
-
+        elif arg[position] == "--run_atomically":
+            print("Running atomically")
+            DISABLE_FREEZING = True
+            DISABLE_ADD_NEW_BELLRINGER = True
 
         # If not on the list
         else:
