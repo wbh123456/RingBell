@@ -35,3 +35,6 @@ jobs:
     - name: Run matching algorithm test
       run: |
         python main.py --matching_algorithm_testing_mode
+    - name: Run full program atomically
+      run: |
+        python main.py  --internal_testing_mode --run_atomically
