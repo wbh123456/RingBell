@@ -38,4 +38,5 @@ jobs:
         pip install pymongo
     - name: Run
       run: |
-        python main.py --internal_testing_mode --enable_email_sending
+        python main.py --release_mode
+        
