@@ -39,6 +39,7 @@ def sendGmail(html_content,receiver,title):
         print('success')
     except smtplib.SMTPException as e:
         print('error',e)
+        raise SystemExit("Error on sending email, quit program")
 
 def generate_email_content(bell_ringer, listener, time):
     succeed_title = '解聆人线上倾听 (匹配成功 :)'
