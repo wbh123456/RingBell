@@ -47,30 +47,30 @@ def extract(is_listener = False):
 
     print("Loggin in...")
     try:
-        element = WebDriverWait(browser, 10).until(
+        element = WebDriverWait(browser, 20).until(
             EC.visibility_of_element_located((By.XPATH, username_xpath))
         )
         element.send_keys(environment.ASKFORM_LOGIN[0])
 
-        element = WebDriverWait(browser, 10).until(
+        element = WebDriverWait(browser, 20).until(
             EC.visibility_of_element_located((By.XPATH, pwd_xpath))
         )
         element.send_keys(environment.ASKFORM_LOGIN[1])
 
-        element = WebDriverWait(browser, 10).until(
+        element = WebDriverWait(browser, 20).until(
             EC.element_to_be_clickable((By.XPATH, login_button_xpath))
         )
         element.click()
 
         print("Looking for form...")
-        element = WebDriverWait(browser, 10).until(
+        element = WebDriverWait(browser, 20).until(
             EC.element_to_be_clickable((By.ID, form_menu_id))
         )
         element.click()
 
         # Select which form to download
         if config.INTERNAL_TESTING:
-            element = WebDriverWait(browser, 10).until(
+            element = WebDriverWait(browser, 20).until(
                 EC.element_to_be_clickable((By.XPATH, bell_ringer_form_internal_test_xpath))
             )
             element.click()
@@ -78,19 +78,19 @@ def extract(is_listener = False):
         else:
             if is_listener:
                 #this link in wrong!! Need to be changed in the future
-                element = WebDriverWait(browser, 10).until(
+                element = WebDriverWait(browser, 20).until(
                     EC.element_to_be_clickable((By.XPATH, ".//a[@href='/Survey/DataList.aspx?AppConfigID=4603080002&FormApplicationID=10801670001&FormCategoryID=10833290001&FormID=16128410001']"))
                 )
                 element.click()
             else:
-                element = WebDriverWait(browser, 10).until(
+                element = WebDriverWait(browser, 20).until(
                     EC.element_to_be_clickable((By.XPATH, bell_ringer_form_xpath))
                 )
                 element.click()
 
         
         print("Downloading...")
-        element = WebDriverWait(browser, 10).until(
+        element = WebDriverWait(browser, 20).until(
             EC.element_to_be_clickable((By.ID, download_button_id))
         )
         element.click()
