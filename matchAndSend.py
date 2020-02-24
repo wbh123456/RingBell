@@ -50,8 +50,8 @@ def matchAndSend():
         listener_collection = db['example_listener_collection']
         bellringer_collection = db['example_bellringer_collection']
     else:
-        listener_collection = db['test_listener_collection']
-        bellringer_collection = db['test_bellringer_collection']
+        listener_collection = db['release_listener_collection']
+        bellringer_collection = db['release_bellringer_collection']
 
     if config.ADD_LISTENERS:
         m.add_listeners_to_database(abs_path_listeners, listener_collection)
