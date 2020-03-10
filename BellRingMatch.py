@@ -15,9 +15,14 @@ time_dict = {
     "周五 6:00-7:00pm":17,"周五 7:00-8:00pm":18,"周五 8:00-9:00pm":19,"周五 9:00-10:00pm":20
 }
 
+# bell_ringer_xls_dict = {
+    # "application_time":0, "name":1, "email":2, "WID":3, "gender":4, "topic":6, "faculty":7,
+    # "need":8, "condition":9, "availability":10, "other_info":11
+# }
 bell_ringer_xls_dict = {
-    "application_time":0, "name":1, "email":2, "WID":3, "gender":4, "topic":6, "faculty":7,
-    "need":8, "condition":9, "availability":10, "other_info":11
+    "application_time":0, "name":1, "email":2, "WID":3, "gender":4, "topic":6, "extra_topic":7, 
+    "faculty":8, "need":9, "extra_need":10, "condition":11, "extra_condition":12, "availability":13,
+    "other_info":14
 }
 
 listener_xls_dict = {
@@ -305,6 +310,12 @@ def read_xls(file_name, is_listener = False, startLine = 1):
             name = str(sheet.cell_value(i, bell_ringer_xls_dict["name"]))
 
             # Construct Person instance
+            to_topic = str(sheet.cell_value(i, bell_ringer_xls_dict["topic"]))
+            to_topic = str(sheet.cell_value(i, bell_ringer_xls_dict["extra_topic"])) if to_topic == "其它" else to_topic
+            to_need  = str(sheet.cell_value(i, bell_ringer_xls_dict["need"]))
+            to_need  = to_need.replace("其它", " " + str(sheet.cell_value(i, bell_ringer_xls_dict["extra_need"]))) if "其它" in to_need else to_need
+            to_condition = str(sheet.cell_value(i, bell_ringer_xls_dict["condition"])) 
+            to_condition = str(sheet.cell_value(i, bell_ringer_xls_dict["extra_condition"])) if to_condition == "其他" else to_condition 
             info.append(Person
                 (   application_time_toronto,                                                                       #application_time
                     name,                                                                                           #Name
@@ -312,10 +323,10 @@ def read_xls(file_name, is_listener = False, startLine = 1):
                     str(sheet.cell_value(i, bell_ringer_xls_dict["email"])),                                        #Email
                     # Optional arguments
                     WID           = str(sheet.cell_value(i, bell_ringer_xls_dict["WID"])),                          #WID
-                    topic         = str(sheet.cell_value(i, bell_ringer_xls_dict["topic"])),                        #Topic
+                    topic         = to_topic,                                                                       #Topic
                     gender        = str(sheet.cell_value(i, bell_ringer_xls_dict["gender"])),                       #gender
-                    need          = str(sheet.cell_value(i, bell_ringer_xls_dict["need"])),                         #need
-                    condition     = str(sheet.cell_value(i, bell_ringer_xls_dict["condition"])),                    #condition
+                    need          = to_need,                                                                        #need
+                    condition     = to_condition,                                                                   #condition
                     other_info    = str(sheet.cell_value(i, bell_ringer_xls_dict["other_info"])),                   #other_info
                     db_id         = application_time_toronto.strftime("%Y-%m-%d, %H:%M:%S") + name
                 )
