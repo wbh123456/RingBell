@@ -5,7 +5,8 @@ import os
 import environment
 import pymongo
 
-developer_list = {"Aaron":"aaronwang0407@gmail.com", "Danny":"dannyding123456@gmail.com", "Jaya":"jessicahu819@hotmail.com"}
+developer_list = {"Aaron":"aaronwang0407@gmail.com", "Danny":"dannyding123456@gmail.com", "Jaya":"jessicahu819@hotmail.com",
+    "Tina": "yuto.dong@mail.utoronto.ca"}
 
 def matchAndSend():
     #Get "relative path"
