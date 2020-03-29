@@ -59,6 +59,7 @@ def config(arg):
         elif arg[position] == "--add_listeners":
             print("Adding listeners")
             ADD_LISTENERS = True
+            DISABLE_EXTRACT = True
         elif arg[position] == "--run_atomically":
             print("Running atomically")
             DISABLE_FREEZING = True
