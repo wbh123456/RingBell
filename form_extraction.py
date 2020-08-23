@@ -10,6 +10,11 @@ import config
 import environment
 
 def get_options(download_path):
+    """
+    Set downloadpath, headless option for chromedriever
+    :param download_path:
+    :return: a webdriver.options object
+    """
     chrome_options = webdriver.ChromeOptions()
     prefs = {'download.default_directory' : download_path}
     chrome_options.headless = True
@@ -17,7 +22,16 @@ def get_options(download_path):
     chrome_options.add_experimental_option('prefs', prefs)
     return chrome_options
 
-def extract(is_listener = False):
+def extract(is_listener=False):
+    """
+    Get latest listener or bellringer forms from askform.com (mainly used for bellringer forms).
+
+    :param is_listener:
+    :return:
+    """
+    if is_listener:
+        print("Running extract with is_listener = True should be deprecated!")
+
     script_dir = os.path.dirname(os.path.realpath(__file__)) #<-- absolute dir the script is in
     if config.INTERNAL_TESTING:
         data_abs_path = os.path.join(script_dir, "internal_testing_data/")
@@ -104,6 +118,10 @@ def extract(is_listener = False):
     print("time: " + str(end - start))
 
 def organize_form():
+    """
+    Rename newly downloaded form/newForm.xls to newForm.xls/oldForm.xls. Delete oldForm
+    :return:
+    """
     script_dir = os.path.dirname(os.path.realpath(__file__)) #<-- absolute dir the script is in
     if config.INTERNAL_TESTING:
         data_abs_path = os.path.join(script_dir, "internal_testing_data/")
