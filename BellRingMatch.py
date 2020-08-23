@@ -20,9 +20,9 @@ time_dict = {
     # "need":8, "condition":9, "availability":10, "other_info":11
 # }
 bell_ringer_xls_dict = {
-    "application_time":0, "name":1, "email":2, "WID":3, "gender":4, "topic":6, "extra_topic":7, 
-    "faculty":8, "need":9, "extra_need":10, "condition":11, "extra_condition":12, "availability":13,
-    "other_info":14
+    "application_time":0, "name":1, "email":3, "WID":4, "gender":5, "university":6, "topic":8, "extra_topic":9,
+    "faculty":10, "need":11, "extra_need":12, "condition":13, "extra_condition":14, "availability":15,
+    "other_info":16
 }
 
 bell_ringer_xls_dict_name = {
@@ -65,7 +65,7 @@ internal_testing_application_time_dict = {
 }
 
 class Person:
-    def __init__(self, application_time, name, availability, email, 
+    def __init__(self, application_time, name, availability, email, university="",
                 WID = "", topic = "", gender = "", need = "", condition = "", other_info = "",
                 listener_num = "", avail_after = "", db_id = ""):
         # mandatory variables
@@ -73,6 +73,7 @@ class Person:
         self.name = name
         self.availability = availability
         self.email = email
+        self.university = university
         # optional varaibles
         self.WID = WID
         self.topic = topic
@@ -153,7 +154,7 @@ class Person:
         return -1
 
     def print_person(self):
-        print("name = ", self.name, "; Email = ", self.email)
+        print("name =", self.name, "; Email =", self.email)
 
 #Match all bell ringers with proper listeners
 #result is in the format [[bell_ringer, matched_listener, date, time], [bell_ringer, -1, -1, -1], ...]
@@ -173,6 +174,7 @@ def match_all(listeners, bell_ringers, listener_collection):
             print("     Submitted on: ", b.application_time.strftime("%Y-%m-%d, %H:%M:%S %Z"))
             print("     Listener:     ", matched_result[0].name)
             print("     At Time:      ", matched_result[1], matched_result[2])
+            print("     University:   ", b.university)
             matching_result_list.append([b, matched_result[0], matched_result[1].isoformat(), matched_result[2]])
     return matching_result_list
 
@@ -236,7 +238,7 @@ def get_listeners_from_database(listener_collection):
     return listener_list
 
 def get_bellringer_from_database(bellringer_collection):
-    print("Getting all bell ringers from databse ...")
+    print("Getting all bell ringers from database ...")
     bellringer_docs = bellringer_collection.find()
     bellringer_list = []
     for l in bellringer_docs:
@@ -247,6 +249,7 @@ def get_bellringer_from_database(bellringer_collection):
                 l["name"],
                 l["availability"], 
                 l["email"],
+                l["university"],
 
                 WID = l["WID"],
                 topic = l["topic"],
@@ -282,7 +285,8 @@ def add_bellringers_to_database(bellringers, bellringer_collection):
                     'application time':             br.application_time, 
                     'name':                         br.name, 
                     'availability':                 br.availability, 
-                    'email':                        br.email, 
+                    'email':                        br.email,
+                    'university':                   br.university,
                     'WID' :                         br.WID,
                     'topic':                        br.topic, 
                     'gender':                       br.gender, 
@@ -346,19 +350,20 @@ def read_xls(file_name, is_listener = False, startLine = 1):
             to_condition = str(sheet.cell_value(i, bell_ringer_xls_dict["condition"])) 
             to_condition = str(sheet.cell_value(i, bell_ringer_xls_dict["extra_condition"])) if to_condition == "其他" else to_condition 
             info.append(Person
-                (   application_time_toronto,                                                                       #application_time
-                    name,                                                                                           #Name
-                    convert_availability(sheet.cell_value(i, bell_ringer_xls_dict["availability"])),                #Availability 
-                    str(sheet.cell_value(i, bell_ringer_xls_dict["email"])),                                        #Email
-                    # Optional arguments
-                    WID           = str(sheet.cell_value(i, bell_ringer_xls_dict["WID"])),                          #WID
-                    topic         = to_topic,                                                                       #Topic
-                    gender        = str(sheet.cell_value(i, bell_ringer_xls_dict["gender"])),                       #gender
-                    need          = to_need,                                                                        #need
-                    condition     = to_condition,                                                                   #condition
-                    other_info    = str(sheet.cell_value(i, bell_ringer_xls_dict["other_info"])),                   #other_info
-                    db_id         = application_time_toronto.strftime("%Y-%m-%d, %H:%M:%S") + name
-                )
+                (application_time_toronto,  #application_time
+                 name,  #Name
+                 convert_availability(sheet.cell_value(i, bell_ringer_xls_dict["availability"])),  #Availability
+                 str(sheet.cell_value(i, bell_ringer_xls_dict["email"])),  #Email
+                 str(sheet.cell_value(i, bell_ringer_xls_dict["university"])),  # University
+                 # Optional arguments
+                 WID           = str(sheet.cell_value(i, bell_ringer_xls_dict["WID"])),  #WID
+                 topic         = to_topic,  #Topic
+                 gender        = str(sheet.cell_value(i, bell_ringer_xls_dict["gender"])),  #gender
+                 need          = to_need,  #need
+                 condition     = to_condition,  #condition
+                 other_info    = str(sheet.cell_value(i, bell_ringer_xls_dict["other_info"])),  #other_info
+                 db_id         = application_time_toronto.strftime("%Y-%m-%d, %H:%M:%S") + name
+                 )
             )               
     return info
 
