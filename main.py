@@ -5,6 +5,7 @@ import sys
 
 def main():
     config.config(sys.argv)
+    # Get new Bell Ringers
     if not config.DISABLE_EXTRACT:
         form_extraction.extract(is_listener = False)
         form_extraction.organize_form()
