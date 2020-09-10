@@ -7,18 +7,20 @@ from datetime import time as dtime
 from datetime import timedelta
 from pytz import timezone
 
+# updated time slots as some new time slots from western listeners were added
+# applicant form should be updated as well so that applicants won't choose a university with no available slots for him
 time_dict = {
-    "周一 6:00-7:00pm":1,"周一 7:00-8:00pm":2,"周一 8:00-9:00pm":3,"周一 9:00-10:00pm":4,
-    "周二 6:00-7:00pm":5,"周二 7:00-8:00pm":6, "周二 8:00-9:00pm":7,"周二 9:00-10:00pm":8,
-    "周三 6:00-7:00pm":9,"周三 7:00-8:00pm":10,"周三 8:00-9:00pm":11,"周三 9:00-10:00pm":12,
-    "周四 6:00-7:00pm":13,"周四 7:00-8:00pm":14,"周四 8:00-9:00pm":15,"周四 9:00-10:00pm":16,
-    "周五 6:00-7:00pm":17,"周五 7:00-8:00pm":18,"周五 8:00-9:00pm":19,"周五 9:00-10:00pm":20
+    "周一 6:00-7:00pm":1,"周一 7:00-8:00pm":2,"周一 8:00-9:00pm":3,"周一 9:00-10:00pm":4, "周一 10:00-11:00pm":5,
+    "周二 6:00-7:00pm":6,"周二 7:00-8:00pm":7, "周二 8:00-9:00pm":8,"周二 9:00-10:00pm":9, "周二 10:00-11:00pm":10,
+    "周三 6:00-7:00pm":11,"周三 7:00-8:00pm":12,"周三 8:00-9:00pm":13,"周三 9:00-10:00pm":14, "周三 10:00-11:00pm":15,
+    "周四 6:00-7:00pm":16,"周四 7:00-8:00pm":17,"周四 8:00-9:00pm":18,"周四 9:00-10:00pm":19, "周四 10:00-11:00pm":20,
+    "周五 6:00-7:00pm":21,"周五 7:00-8:00pm":22,"周五 8:00-9:00pm":23,"周五 9:00-10:00pm":24, "周五 10:00-11:00pm":25,
+    "周六 6:00-7:00pm":26,"周六 7:00-8:00pm":27,"周六 8:00-9:00pm":28,"周六 9:00-10:00pm":29, "周六 10:00-11:00pm":30,
+    "周日 6:00-7:00pm":31,"周日 7:00-8:00pm":32,"周日 8:00-9:00pm":33,"周日 9:00-10:00pm":34, "周日 10:00-11:00pm":35
 }
+NUM_SLOTS_IN_ONE_DAY = 5
 
-# bell_ringer_xls_dict = {
-    # "application_time":0, "name":1, "email":2, "WID":3, "gender":4, "topic":6, "faculty":7,
-    # "need":8, "condition":9, "availability":10, "other_info":11
-# }
+
 bell_ringer_xls_dict = {
     "application_time":0, "name":1, "email":3, "WID":4, "gender":5, "university":6, "topic":8, "extra_topic":9,
     "faculty":10, "need":11, "extra_need":12, "condition":13, "extra_condition":14, "availability":15,
@@ -26,7 +28,7 @@ bell_ringer_xls_dict = {
 }
 
 listener_xls_dict = {
-    "application_time":0, "email":1, "availability":2, "name":3
+    "application_time":0, "university":1, "name":2, "email":3, "availability":4
 }
 
 internal_testing_application_time_dict = {
@@ -50,7 +52,7 @@ internal_testing_application_time_dict = {
 class Person:
     def __init__(self, application_time, name, availability, email, university="",
                 WID = "", topic = "", gender = "", need = "", condition = "", other_info = "",
-                listener_num = "", avail_after = "", db_id = ""):
+                listener_num = "", avail_after = {}, db_id = ""):
         # mandatory variables
         self.application_time = application_time
         self.name = name
@@ -71,7 +73,7 @@ class Person:
         self.db_id = db_id
 
     # Find proper listener for a bell_ringer
-    # --> If a listener has been selected, it will be moved to the end the the candidate list to lower its chance of being seleted again```
+    # --> If a listener has been selected, it will be moved to the end the the candidate list to lower its chance of being selected again```
     # --> If we cannot match a bell_ringer with a listener, then return -1
     def find_listener(self, listeners, listener_collection):
         # Check if the bell ringer can be matched on the same date
@@ -87,7 +89,7 @@ class Person:
         elif self.application_time.time() > dtime(17,0):
             offset_num = 1
         start_weekday = start_date.isoweekday()
-        start_time_slot = 1 + (start_weekday - 1) * 4 + offset_num
+        start_time_slot = 1 + (start_weekday - 1) * NUM_SLOTS_IN_ONE_DAY + offset_num
         # Reorder availability list so that the first element is the next potential time slot after start_weekend
         reordered_availability = self.availability[:]
         for time_slot in self.availability:
@@ -103,16 +105,21 @@ class Person:
             continue_finding_listeners = False # Dont loop again if no listener's time_slot matches
             for time in reordered_availability:
                 for listener in listeners:
+                    # check the listener's university 
+                    # (match will be faster if the listeners are splitted into two groups)
+                    if listener.university != self.university:
+                        continue_finding_listeners = True
+                        continue
                     if time in listener.availability:
                         # Calculate matched date = start_date + date diff
-                        matched_weekday = (time - 1) // 4 + 1
+                        matched_weekday = (time - 1) // NUM_SLOTS_IN_ONE_DAY + 1
                         delta_days = matched_weekday - start_weekday
                         if delta_days < 0:
                             delta_days += 7
                         delta_days += 7 * loop_number
                         matched_date = start_date + timedelta(days = delta_days)
 
-                        # Check is the listener is available ( if listener is already busy on this day)
+                        # Check if the listener is available ( if listener is already busy on this day)
                         if (str(time) in listener.avail_after and
                             matched_date <= listener.avail_after[str(time)] ):
                             continue_finding_listeners = True
@@ -139,8 +146,8 @@ class Person:
     def print_person(self):
         print("name =", self.name, "; Email =", self.email)
 
-#Match all bell ringers with proper listeners
-#result is in the format [[bell_ringer, matched_listener, date, time], [bell_ringer, -1, -1, -1], ...]
+# Match all bell ringers with proper listeners
+# result is in the format [[bell_ringer, matched_listener, date, time], [bell_ringer, -1, -1, -1], ...]
 def match_all(listeners, bell_ringers, listener_collection):
     matching_result_list = [] 
     for b in bell_ringers:
@@ -192,7 +199,7 @@ def add_listeners_to_database(listener_form, listener_collection):
             raise ValueError('Listener application time or name cannot be blank')
         id = l.application_time.strftime("%Y-%m-%d, %H:%M:%S") + l.name
         listener_doc = {'_id':id,'application time':l.application_time, 'name':l.name, 
-                        'availability':l.availability, 'email':l.email, 'avail_after' : {}}
+                        'university':l.university, 'availability':l.availability, 'email':l.email, 'avail_after' : {}}
         listener_collection.insert_one(listener_doc)
         l.print_person()
     
@@ -213,6 +220,7 @@ def get_listeners_from_database(listener_collection):
                 l["name"],
                 l["availability"], 
                 l["email"],
+                l["university"],
 
                 avail_after = avail_after_date,
                 db_id = l['_id']
@@ -244,7 +252,6 @@ def get_bellringer_from_database(bellringer_collection):
         )
     return bellringer_list
 
-
 def get_new_bellringer(bellringer_form, bellringer_collection):
     print("Getting new bell ringers ...")
     all_bellringers = read_xls(bellringer_form)
@@ -257,6 +264,7 @@ def get_new_bellringer(bellringer_form, bellringer_collection):
     if len(new_bellringers) == 0:
         print(    "Does not find any new bell ringer!")
     return new_bellringers
+
 
 def add_bellringers_to_database(bellringers, bellringer_collection):
     print('Add any new bell ringers to database ...')
@@ -296,7 +304,8 @@ def read_xls(file_name, is_listener = False, startLine = 1):
                 (   application_time_toronto,
                     str(sheet.cell_value(i, listener_xls_dict["name"])),
                     convert_availability(sheet.cell_value(i, listener_xls_dict["availability"])), 
-                    str(sheet.cell_value(i, listener_xls_dict["email"])),                         
+                    str(sheet.cell_value(i, listener_xls_dict["email"])),
+                    str(sheet.cell_value(i, listener_xls_dict["university"])),
                     # Optional arguments
                     listener_num        = i,
                 )
@@ -320,12 +329,13 @@ def read_xls(file_name, is_listener = False, startLine = 1):
             to_need  = to_need.replace("其它", " " + str(sheet.cell_value(i, bell_ringer_xls_dict["extra_need"]))) if "其它" in to_need else to_need
             to_condition = str(sheet.cell_value(i, bell_ringer_xls_dict["condition"])) 
             to_condition = str(sheet.cell_value(i, bell_ringer_xls_dict["extra_condition"])) if to_condition == "其他" else to_condition 
+            to_university = "Western" if "Western" in str(sheet.cell_value(i, bell_ringer_xls_dict["university"])) else "U of T"
             info.append(Person
                 (application_time_toronto,  #application_time
                  name,  #Name
                  convert_availability(sheet.cell_value(i, bell_ringer_xls_dict["availability"])),  #Availability
                  str(sheet.cell_value(i, bell_ringer_xls_dict["email"])),  #Email
-                 str(sheet.cell_value(i, bell_ringer_xls_dict["university"])),  # University
+                 to_university,  # University
                  # Optional arguments
                  WID           = str(sheet.cell_value(i, bell_ringer_xls_dict["WID"])),  #WID
                  topic         = to_topic,  #Topic
