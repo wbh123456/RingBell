@@ -144,7 +144,7 @@ class Person:
         return -1
 
     def print_person(self):
-        print("name =", self.name, "; Email =", self.email)
+        print("name =", self.name, "; Email =", self.email, "; Univ =", self.university)
 
 # Match all bell ringers with proper listeners
 # result is in the format [[bell_ringer, matched_listener, date, time], [bell_ringer, -1, -1, -1], ...]
@@ -329,7 +329,7 @@ def read_xls(file_name, is_listener = False, startLine = 1):
             to_need  = to_need.replace("其它", " " + str(sheet.cell_value(i, bell_ringer_xls_dict["extra_need"]))) if "其它" in to_need else to_need
             to_condition = str(sheet.cell_value(i, bell_ringer_xls_dict["condition"])) 
             to_condition = str(sheet.cell_value(i, bell_ringer_xls_dict["extra_condition"])) if to_condition == "其他" else to_condition 
-            to_university = "Western" if "Western" in str(sheet.cell_value(i, bell_ringer_xls_dict["university"])) else "U of T"
+            to_university = str(sheet.cell_value(i, bell_ringer_xls_dict["university"]))
             info.append(Person
                 (application_time_toronto,  #application_time
                  name,  #Name
