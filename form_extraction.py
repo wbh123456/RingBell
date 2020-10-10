@@ -17,9 +17,20 @@ def get_options(download_path):
     """
     chrome_options = webdriver.ChromeOptions()
     prefs = {'download.default_directory' : download_path}
-    chrome_options.headless = True
+    # chrome_options.headless = True
     chrome_options.add_argument("--log-level=3")
+
+    chrome_options.add_argument("--window-size=1920,1080")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--disable-extensions")
+    chrome_options.add_experimental_option("useAutomationExtension", False)
+    chrome_options.add_argument("--proxy-server='direct://'")
+    chrome_options.add_argument("--proxy-bypass-list=*")
+    chrome_options.add_argument("--start-maximized")
+    chrome_options.add_argument("--headless")
+
     chrome_options.add_experimental_option('prefs', prefs)
+
     return chrome_options
 
 def extract(is_listener=False):
