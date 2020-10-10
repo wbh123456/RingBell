@@ -27,6 +27,24 @@ bell_ringer_xls_dict = {
     "other_info":16
 }
 
+bell_ringer_xls_dict_name = {
+    "application_time":"提交时间", 
+    "name":"姓名", 
+    "email":"邮箱", 
+    "WID":"微信号", 
+    "gender":"性别", 
+    "university":"在读学校",
+    "topic":"您此次想要解聆的方面是？", 
+    "extra_topic":"若以上题目填写“其他”，请在此处说明你的解铃方向，谢谢。", 
+    "faculty":"您本科就读的专业是？", 
+    "need":"您此次解聆的主要需求是", 
+    "extra_need":"若以上题目填写“其他”，请在此处说明你的需求，谢谢。", 
+    "condition":"觉得自己现在的精神状态是？", 
+    "extra_condition":"若以上题目填写“其他”，请在此处说明你的精神状态，谢谢。", 
+    "availability":"您意向的(线上）一小时解聆时间 （时区为多伦多东部时间）",
+    "other_info":"有想提前说给倾听者的留言吗？"
+}
+
 listener_xls_dict = {
     "application_time":0, "university":1, "name":2, "email":3, "availability":4
 }
@@ -292,6 +310,18 @@ def add_bellringers_to_database(bellringers, bellringer_collection):
 def read_xls(file_name, is_listener = False, startLine = 1):
     wb = xlrd.open_workbook(file_name)
     sheet = wb.sheet_by_index(0)
+
+    # Update Bellringer xls column to index (In case the column order in the downloaded form is randomized)
+    for attribute_name, value in bell_ringer_xls_dict_name.items():
+        found = False
+        for col in range(sheet.ncols):
+            if value == sheet.cell_value(0, col):
+                bell_ringer_xls_dict[attribute_name] = col
+                found = True
+                break
+        if not found:
+            print("Warning: bell ringer attribute {} not found in xls".format(attribute_name))
+
     info = []
     for i in range(startLine, sheet.nrows):
         if is_listener:
