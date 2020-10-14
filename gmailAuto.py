@@ -41,9 +41,13 @@ def sendGmail(html_content,receiver,title):
         print('error',e)
         raise SystemExit("Error on sending email, quit program")
 
-def generate_email_content(bell_ringer, listener, time):
+def generate_email_content(bell_ringer, listener, time, if_internal):
     succeed_title = '解聆人线上倾听 (匹配成功 :)'
     fail_title = '解聆人线上倾听 (匹配失败 :('
+    if if_internal:
+        internal_messg = "[*内测*]"
+        succeed_title = internal_messg + succeed_title
+        fail_title = internal_messg + fail_title
     #------bell ringer email content------
     if listener != -1:
         br_content = c.html_br_content_success

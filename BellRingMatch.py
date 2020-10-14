@@ -10,13 +10,13 @@ from pytz import timezone
 # updated time slots as some new time slots from western listeners were added
 # applicant form should be updated as well so that applicants won't choose a university with no available slots for him
 time_dict = {
-    "周一 6:00-7:00pm":1,"周一 7:00-8:00pm":2,"周一 8:00-9:00pm":3,"周一 9:00-10:00pm":4, "周一 10:00-11:00pm":5,
-    "周二 6:00-7:00pm":6,"周二 7:00-8:00pm":7, "周二 8:00-9:00pm":8,"周二 9:00-10:00pm":9, "周二 10:00-11:00pm":10,
-    "周三 6:00-7:00pm":11,"周三 7:00-8:00pm":12,"周三 8:00-9:00pm":13,"周三 9:00-10:00pm":14, "周三 10:00-11:00pm":15,
-    "周四 6:00-7:00pm":16,"周四 7:00-8:00pm":17,"周四 8:00-9:00pm":18,"周四 9:00-10:00pm":19, "周四 10:00-11:00pm":20,
-    "周五 6:00-7:00pm":21,"周五 7:00-8:00pm":22,"周五 8:00-9:00pm":23,"周五 9:00-10:00pm":24, "周五 10:00-11:00pm":25,
-    "周六 6:00-7:00pm":26,"周六 7:00-8:00pm":27,"周六 8:00-9:00pm":28,"周六 9:00-10:00pm":29, "周六 10:00-11:00pm":30,
-    "周日 6:00-7:00pm":31,"周日 7:00-8:00pm":32,"周日 8:00-9:00pm":33,"周日 9:00-10:00pm":34, "周日 10:00-11:00pm":35
+    "周一 9:00-10:00am":1, "周一 10:00-11:00am":2, "周一 8:00-9:00pm":3, "周一 9:00-10:00pm":4,  "周一 10:00-11:00pm":5,
+    "周二 9:00-10:00am":6, "周二 10:00-11:00am":7, "周二 8:00-9:00pm":8, "周二 9:00-10:00pm":9,  "周二 10:00-11:00pm":10,
+    "周三 9:00-10:00am":11,"周三 10:00-11:00am":12,"周三 8:00-9:00pm":13,"周三 9:00-10:00pm":14, "周三 10:00-11:00pm":15,
+    "周四 9:00-10:00am":16,"周四 10:00-11:00am":17,"周四 8:00-9:00pm":18,"周四 9:00-10:00pm":19, "周四 10:00-11:00pm":20,
+    "周五 9:00-10:00am":21,"周五 10:00-11:00am":22,"周五 8:00-9:00pm":23,"周五 9:00-10:00pm":24, "周五 10:00-11:00pm":25,
+    "周六 9:00-10:00am":26,"周六 10:00-11:00am":27,"周六 8:00-9:00pm":28,"周六 9:00-10:00pm":29, "周六 10:00-11:00pm":30,
+    "周日 9:00-10:00am":31,"周日 10:00-11:00am":32,"周日 8:00-9:00pm":33,"周日 9:00-10:00pm":34, "周日 10:00-11:00pm":35
 }
 NUM_SLOTS_IN_ONE_DAY = 5
 
@@ -33,7 +33,7 @@ bell_ringer_xls_dict_name = {
     "email":"邮箱", 
     "WID":"微信号", 
     "gender":"性别", 
-    "university":"在读学校",
+    "university":"想要匹配哪所学校的倾听者？",
     "topic":"您此次想要解聆的方面是？", 
     "extra_topic":"若以上题目填写“其他”，请在此处说明你的解铃方向，谢谢。", 
     "faculty":"您本科就读的专业是？", 
@@ -104,7 +104,7 @@ class Person:
             offset_num = 3
         elif self.application_time.time() > dtime(18,0):
             offset_num = 2
-        elif self.application_time.time() > dtime(17,0):
+        elif self.application_time.time() > dtime(8,0):
             offset_num = 1
         start_weekday = start_date.isoweekday()
         start_time_slot = 1 + (start_weekday - 1) * NUM_SLOTS_IN_ONE_DAY + offset_num
@@ -175,6 +175,7 @@ def match_all(listeners, bell_ringers, listener_collection):
         if matched_result == -1:
             print("     Bell Ringer:  ", b.name)
             print("     Submitted on: ", b.application_time.strftime("%Y-%m-%d, %H:%M:%S %Z"))
+            print("     University:   ", b.university)
             print("     Cannot find a Listener!")
             matching_result_list.append([b, -1, -1, -1])
         else:
@@ -202,9 +203,11 @@ def convert_enum_to_availabilty(enum_availability):
     return -1
 
 def convert_float_to_datetime(float_time):
+    float_time = float(float_time)
     return datetime(*xlrd.xldate_as_tuple(float_time, 0))
 
 def convert_float_to_date(float_time):
+    float_time = float(float_time)
     return datetime.date(convert_float_to_datetime(float_time))
 
 #------------End of conversions------------
@@ -312,22 +315,25 @@ def read_xls(file_name, is_listener = False, startLine = 1):
     sheet = wb.sheet_by_index(0)
 
     # Update Bellringer xls column to index (In case the column order in the downloaded form is randomized)
-    for attribute_name, value in bell_ringer_xls_dict_name.items():
-        found = False
-        for col in range(sheet.ncols):
-            if value == sheet.cell_value(0, col):
-                bell_ringer_xls_dict[attribute_name] = col
-                found = True
-                break
-        if not found:
-            print("Warning: bell ringer attribute {} not found in xls".format(attribute_name))
+    if not is_listener:
+        for attribute_name, value in bell_ringer_xls_dict_name.items():
+            found = False
+            for col in range(sheet.ncols):
+                if value == sheet.cell_value(0, col):
+                    bell_ringer_xls_dict[attribute_name] = col
+                    found = True
+                    break
+            if not found:
+                print("Warning: bell ringer attribute {} not found in xls".format(attribute_name))
 
     info = []
     for i in range(startLine, sheet.nrows):
         if is_listener:
             # Construct Person instance
             # Get applicaiton time in toronto
+
             app_time = convert_float_to_datetime(sheet.cell_value(i, listener_xls_dict["application_time"]))
+            # app_time = convert_float_to_datetime(0.0)
             application_time_china = timezone('Asia/Shanghai').localize(app_time)
             application_time_toronto = application_time_china.astimezone(timezone('Canada/Eastern'))
             info.append(Person
