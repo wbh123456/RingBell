@@ -92,7 +92,7 @@ def matchAndSend():
             date_and_time = date + " " + time
 
         #generate email contents
-        br_content, l_content, d_content, title = g.generate_email_content(bell_ringer, listener, date_and_time)
+        br_content, l_content, d_content, title = g.generate_email_content(bell_ringer, listener, date_and_time, config.INTERNAL_TESTING)
 
         #Send Emails
         if not config.DISABLE_EMAIL_SENDING:

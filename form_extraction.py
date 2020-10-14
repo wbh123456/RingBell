@@ -17,9 +17,20 @@ def get_options(download_path):
     """
     chrome_options = webdriver.ChromeOptions()
     prefs = {'download.default_directory' : download_path}
-    chrome_options.headless = True
+    # chrome_options.headless = True
     chrome_options.add_argument("--log-level=3")
+
+    chrome_options.add_argument("--window-size=1920,1080")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--disable-extensions")
+    chrome_options.add_experimental_option("useAutomationExtension", False)
+    chrome_options.add_argument("--proxy-server='direct://'")
+    chrome_options.add_argument("--proxy-bypass-list=*")
+    chrome_options.add_argument("--start-maximized")
+    chrome_options.add_argument("--headless")
+
     chrome_options.add_experimental_option('prefs', prefs)
+
     return chrome_options
 
 def extract(is_listener=False):
@@ -42,8 +53,9 @@ def extract(is_listener=False):
     pwd_xpath = "/html/body/div[1]/div[1]/div/div[4]/div/input"
     login_button_xpath = ".//a[@onclick='askformLogin()']"
     form_menu_id = "menu4603080002"
-    bell_ringer_form_xpath = ".//a[@href='/Survey/DataList.aspx?AppConfigID=4603080002&FormApplicationID=10244540001&FormCategoryID=10276160001&FormID=14461000001']"
-    bell_ringer_form_internal_test_xpath = ".//a[@href='/Survey/DataList.aspx?AppConfigID=4603080002&FormApplicationID=11631380001&FormCategoryID=11663020001&FormID=18367510001']"
+    bell_ringer_form_xpath = ".//a[@href='/Survey/DataList.aspx?AppConfigID=4603080002&FormApplicationID=11815900001&FormCategoryID=11847880001&FormID=18742330001']"
+    bell_ringer_form_internal_test_xpath = ".//a[@href='/Survey/DataList.aspx?AppConfigID=4603080002&FormApplicationID=11808260001&FormCategoryID=11840210001&FormID=18731950001']"
+    
     download_button_id = "btnExport"
 
     # If file already exits, delete it

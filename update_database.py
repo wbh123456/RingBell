@@ -57,7 +57,7 @@ def update_database():
 
     if collection_input == "Bell Ringers":
         bellRingers = m.get_new_bellringer(rel_path_bellringer_Form, bellringer_collection)
-        confirm = input("Are you sure you want to add the above bell ringers to {} ?".format(collection_input))
+        confirm = input("Are you sure you want to add the above bell ringers to {} ? (YES/NO)".format(collection_input))
         if confirm == "YES":
             m.add_bellringers_to_database(bellRingers, bellringer_collection)
             print("Action Success!")
@@ -68,7 +68,7 @@ def update_database():
         listeners = m.read_xls(rel_path_listeners, is_listener=True)
         for l in listeners:
             l.print_person()
-        confirm = input("Are you sure you want to add the above listeners to {} ?".format(collection_input))
+        confirm = input("Are you sure you want to add the above listeners to {} ? (YES/NO)".format(collection_input))
         if confirm == "YES":
             m.add_listeners_to_database(rel_path_listeners, listener_collection)
             print("Action Success!")
