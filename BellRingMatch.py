@@ -7,8 +7,7 @@ from datetime import time as dtime
 from datetime import timedelta
 from pytz import timezone
 
-# updated time slots as some new time slots from western listeners were added
-# applicant form should be updated as well so that applicants won't choose a university with no available slots for him
+# A dictionary that maps the time slot to a number, which is used internally in the mathcing algorithm
 time_dict = {
     "周一 9:00-10:00am":1, "周一 10:00-11:00am":2, "周一 8:00-9:00pm":3, "周一 9:00-10:00pm":4,  "周一 10:00-11:00pm":5,
     "周二 9:00-10:00am":6, "周二 10:00-11:00am":7, "周二 8:00-9:00pm":8, "周二 9:00-10:00pm":9,  "周二 10:00-11:00pm":10,
@@ -20,13 +19,14 @@ time_dict = {
 }
 NUM_SLOTS_IN_ONE_DAY = 5
 
-
+# A dictionary maps column name to its column index on the bell ringer form
 bell_ringer_xls_dict = {
     "application_time":0, "name":1, "email":3, "WID":4, "gender":5, "university":6, "topic":8, "extra_topic":9,
     "faculty":10, "need":11, "extra_need":12, "condition":13, "extra_condition":14, "availability":15,
     "other_info":16
 }
 
+# A dictionary that maps the english property to column in the askform in chinese
 bell_ringer_xls_dict_name = {
     "application_time":"提交时间", 
     "name":"姓名", 
@@ -94,20 +94,34 @@ class Person:
     # --> If a listener has been selected, it will be moved to the end the the candidate list to lower its chance of being selected again```
     # --> If we cannot match a bell_ringer with a listener, then return -1
     def find_listener(self, listeners, listener_collection):
-        # Check if the bell ringer can be matched on the same date
-        # Don't match any pairs within 1 hour of application time 
-        offset_num = 0
+        # +++++++++Don't match any pairs within 3 hours of application time +++++++++++++
+        # Offset Num :       |  1   |   2     |   3     |    4    |   5     | Day + 1   |
+        # Start Match after: | 9am  |  10am   |   8pm   |   9pm   | 10pm    | Next Day  |
+        # Application Time:  | <6am | 6am-7am | 7am-5pm | 5pm-6pm | 6pm-7pm | >7pm      |
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        offset_num = 1
         start_date = self.application_time.date()
-        if self.application_time.time() > dtime(20,0):
+        if self.application_time.time() > dtime(19,0):
+            # If submitted application after 7pm, then go to the next day
             start_date = start_date + timedelta(days=1)
-        elif self.application_time.time() > dtime(19,0):
-            offset_num = 3
         elif self.application_time.time() > dtime(18,0):
+            # If submitted application after 6pm, then start matching after 10pm
+            offset_num = 5
+        elif self.application_time.time() > dtime(17,0):
+            # If submitted application after 5pm, then start matching after 9pm
+            offset_num = 4
+        elif self.application_time.time() > dtime(7,0):
+            # If submitted application after 7am, then start matching after 8pm
+            offset_num = 3
+        elif self.application_time.time() > dtime(6,0):
+            # If submitted application after 6am, then start matching after 10am
             offset_num = 2
-        elif self.application_time.time() > dtime(8,0):
+        else:
+            # If submitted application before or eq to 6am, then start matching after 9am
             offset_num = 1
         start_weekday = start_date.isoweekday()
-        start_time_slot = 1 + (start_weekday - 1) * NUM_SLOTS_IN_ONE_DAY + offset_num
+        start_time_slot = (start_weekday - 1) * NUM_SLOTS_IN_ONE_DAY + offset_num # We start looking for matched date after this start_time_slot
+
         # Reorder availability list so that the first element is the next potential time slot after start_weekend
         reordered_availability = self.availability[:]
         for time_slot in self.availability:
@@ -155,8 +169,7 @@ class Person:
                         return (listener, matched_date, convert_enum_to_availabilty(time))
 
             loop_number += 1
-            # Don't match after 2 weeks from about application time
-            # (actually 2 weeks from the first available bell ringer time_slot)
+            # Don't match after 2 weeks from the first available bell ringer time_slot
             if loop_number >= 2:
                 break
         return -1

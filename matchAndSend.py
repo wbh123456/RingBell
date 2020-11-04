@@ -96,7 +96,7 @@ def matchAndSend():
 
         #Send Emails
         if not config.DISABLE_EMAIL_SENDING:
-            # To Bell Ringer
+            # To Bell Ringer first (This has the highest probability to fail)
             print("-->Sending email to Bell Ringer: " + bell_ringer.name + " at " + bell_ringer.email + " ... ")
             g.sendGmail(br_content, bell_ringer.email, title)
 
