@@ -69,6 +69,7 @@ def extract(is_listener=False):
     browser = webdriver.Chrome(chrome_options=get_options(data_abs_path))
 
     print("Going to www.askform.cn/login ...")
+    browser.set_page_load_timeout(30)
     browser.get("https://www.askform.cn/login")
 
     print("Loggin in...")
