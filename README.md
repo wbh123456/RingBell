@@ -1,6 +1,6 @@
 ![Sanity Check](https://github.com/wbh123456/RingBell/workflows/Sanity%20Check/badge.svg)
 # RingBell
-The back-end system for mental health counselling service appointment booking with EmpowerChange Club. The program intelligently looks for the most appropriate counseller for every applicant, then sends email to confirm the appointment. 
+The back-end system for mental health counselling service appointment booking with EmpowerChange Club. The program intelligently looks for the most appropriate counselor for every applicant, then sends email to confirm the appointment. 
 
 - *The system is deployed on Github CI/CD pipeline, and is sceduled to run every 10 minutes.*
 - *The system currently uses MongoDB as the database.*
@@ -31,5 +31,5 @@ python main.py [--options]
 `--matching_algorithm_testing_mode`
 `--internal_testing_mode`
 `--disable_email_sending`
-`--disable_freezing`
+`--disable_freezing`  
 For a complete set of options, please check config.py
