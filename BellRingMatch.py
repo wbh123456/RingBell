@@ -208,7 +208,7 @@ def match_all(listeners, bell_ringers, listener_collection):
             print("     University:   ", b.university)
             print("     Cannot find a Listener!")
             matching_result_list.append([b, -1, -1, -1])
-        else if matched_result == -2:
+        elif matched_result == -2:
             print("     Bell Ringer:  ", b.name)
             print("     Submitted on: ", b.application_time.strftime("%Y-%m-%d, %H:%M:%S %Z"))
             print("     University:   ", b.university)
