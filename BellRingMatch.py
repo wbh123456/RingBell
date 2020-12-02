@@ -201,8 +201,9 @@ def match_all(listeners, bell_ringers, listener_collection):
     return matching_result_list
 
 #------------Conversions------------
-#convert availablity string to an enum according to time_dict
-def convert_availability(avail):
+# Convert availablity string to an enum according to time_dict
+# Input is the availability string seperated by comma
+def convert_availability(avail:str) -> list:
     new_avail = []
     for time in avail.split(','):
         new_avail.append(time_dict[time])
