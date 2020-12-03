@@ -243,11 +243,11 @@ def convert_enum_to_availabilty(enum_availability:int) -> str:
             return item[0]
     return -1
 
-def convert_float_to_date(float_time:float):
+def convert_float_to_datetime(float_time:float):
     float_time = float(float_time)
     return datetime(*xlrd.xldate_as_tuple(float_time, 0))
 
-def convert_float_to_date(float_time):
+def convert_float_to_date(float_time:float):
     float_time = float(float_time)
     return datetime.date(convert_float_to_datetime(float_time))
 
