@@ -7,6 +7,9 @@ from datetime import time as dtime
 from datetime import timedelta
 from pytz import timezone
 
+from typing import List
+
+
 # A dictionary that maps the time slot to a number, which is used internally in the mathcing algorithm
 time_dict = {
     "周一 9:00-10:00am":1, "周一 10:00-11:00am":2, "周一 8:00-9:00pm":3, "周一 9:00-10:00pm":4,  "周一 10:00-11:00pm":5,
@@ -225,21 +228,22 @@ def match_all(listeners, bell_ringers, listener_collection):
     return matching_result_list
 
 #------------Conversions------------
-#convert availablity string to an enum according to time_dict
-def convert_availability(avail):
+# Convert availablity string to an enum according to time_dict
+# Input is the availability string seperated by comma
+def convert_availability(avail:str) -> List[int]:
     new_avail = []
     for time in avail.split(','):
         new_avail.append(time_dict[time])
     return new_avail
 
 #convert value in time_dict back to its value(convert enum availability to string availability)
-def convert_enum_to_availabilty(enum_availability):
+def convert_enum_to_availabilty(enum_availability:int) -> str:
     for item in time_dict.items():
         if item[1] == enum_availability:
             return item[0]
     return -1
 
-def convert_float_to_datetime(float_time):
+def convert_float_to_date(float_time:float):
     float_time = float(float_time)
     return datetime(*xlrd.xldate_as_tuple(float_time, 0))
 
