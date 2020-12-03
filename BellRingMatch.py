@@ -7,8 +7,6 @@ from datetime import time as dtime
 from datetime import timedelta
 from pytz import timezone
 
-from typing import List
-
 # A dictionary that maps the time slot to a number, which is used internally in the mathcing algorithm
 time_dict = {
     "周一 9:00-10:00am":1, "周一 10:00-11:00am":2, "周一 8:00-9:00pm":3, "周一 9:00-10:00pm":4,  "周一 10:00-11:00pm":5,
@@ -96,6 +94,23 @@ class Person:
     # --> If a listener has been selected, it will be moved to the end the the candidate list to lower its chance of being selected again```
     # --> If we cannot match a bell_ringer with a listener, then return -1
     def find_listener(self, listeners, listener_collection):
+        
+        # check if the bell ringer's selected time is valid (currently a bell ringer could only select one school)
+        # 周一到周五晚上8-9pm，仅限UT多伦多大学的倾听者；
+        # 周六和周日的时间仅会匹配到western西安大略大学的倾听者。
+        # 其余时间两所学校都可以进行匹配。
+        western_invalid_slots = set([3, 8, 13, 18, 23, 28, 33])
+        toronto_invalid_slots = set([26, 27, 27, 29, 30, 31, 32, 33, 34])
+        bell_ringer_avail_set = set(self.availability[:])
+        if self.university == "西安大略大学 Western University":
+            # check if the bell ringer's availability is a subset of western's invalid slots
+            if bell_ringer_avail_set.issubset(western_invalid_slots):
+                return -2
+        if self.university == "多伦多大学 University of Toronto":
+            # check if the bell ringer's availability is a subset of u toronto's invalid slots
+            if bell_ringer_avail_set.issubset(toronto_invalid_slots):
+                return -2
+        
         # +++++++++Don't match any pairs within 3 hours of application time +++++++++++++
         # Offset Num :       |  1   |   2     |   3     |    4    |   5     | Day + 1   |
         # Start Match after: | 9am  |  10am   |   8pm   |   9pm   | 10pm    | Next Day  |
@@ -123,6 +138,7 @@ class Person:
             offset_num = 1
         start_weekday = start_date.isoweekday()
         start_time_slot = (start_weekday - 1) * NUM_SLOTS_IN_ONE_DAY + offset_num # We start looking for matched date after this start_time_slot
+
 
         # Reorder availability list so that the first element is the next potential time slot after start_weekend
         reordered_availability = self.availability[:]
@@ -193,6 +209,12 @@ def match_all(listeners, bell_ringers, listener_collection):
             print("     University:   ", b.university)
             print("     Cannot find a Listener!")
             matching_result_list.append([b, -1, -1, -1])
+        elif matched_result == -2:
+            print("     Bell Ringer:  ", b.name)
+            print("     Submitted on: ", b.application_time.strftime("%Y-%m-%d, %H:%M:%S %Z"))
+            print("     University:   ", b.university)
+            print("     All selected time slots are not valid for the selected school!")
+            matching_result_list.append([b, -2, -2, -2])
         else:
             print("     Bell Ringer:  ", b.name)
             print("     Submitted on: ", b.application_time.strftime("%Y-%m-%d, %H:%M:%S %Z"))
@@ -203,26 +225,25 @@ def match_all(listeners, bell_ringers, listener_collection):
     return matching_result_list
 
 #------------Conversions------------
-# Convert availablity string to an enum according to time_dict
-# Input is the availability string seperated by comma
-def convert_availability(avail:str) -> List[int]:
+#convert availablity string to an enum according to time_dict
+def convert_availability(avail):
     new_avail = []
     for time in avail.split(','):
         new_avail.append(time_dict[time])
     return new_avail
 
 #convert value in time_dict back to its value(convert enum availability to string availability)
-def convert_enum_to_availabilty(enum_availability:int) -> str:
+def convert_enum_to_availabilty(enum_availability):
     for item in time_dict.items():
         if item[1] == enum_availability:
             return item[0]
     return -1
 
-def convert_float_to_datetime(float_time:float):
+def convert_float_to_datetime(float_time):
     float_time = float(float_time)
     return datetime(*xlrd.xldate_as_tuple(float_time, 0))
 
-def convert_float_to_date(float_time:float):
+def convert_float_to_date(float_time):
     float_time = float(float_time)
     return datetime.date(convert_float_to_datetime(float_time))
 

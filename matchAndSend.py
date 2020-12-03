@@ -88,7 +88,7 @@ def matchAndSend():
         date = matching_result[2]
         time = matching_result[3]
         date_and_time = ""
-        if date != -1:
+        if date != -1 and date != -2:
             date_and_time = date + " " + time
 
         #generate email contents
