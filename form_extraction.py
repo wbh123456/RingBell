@@ -17,9 +17,20 @@ def get_options(download_path):
     """
     chrome_options = webdriver.ChromeOptions()
     prefs = {'download.default_directory' : download_path}
-    chrome_options.headless = True
+     # chrome_options.headless = True
     chrome_options.add_argument("--log-level=3")
+
+    chrome_options.add_argument("--window-size=1920,1080")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--disable-extensions")
+    chrome_options.add_experimental_option("useAutomationExtension", False)
+    chrome_options.add_argument("--proxy-server='direct://'")
+    chrome_options.add_argument("--proxy-bypass-list=*")
+    chrome_options.add_argument("--start-maximized")
+    chrome_options.add_argument("--headless")
+
     chrome_options.add_experimental_option('prefs', prefs)
+    
     return chrome_options
 
 def extract(is_listener=False):
@@ -86,7 +97,7 @@ def extract(is_listener=False):
 
         print("Looking for form...")
         form_menu_xpath = "/html/body/form/div[4]/div/div/div[1]/div[1]/div/div[1]/ul/li[3]/a"
-        element = WebDriverWait(browser, 200).until(
+        element = WebDriverWait(browser, 20).until(
             EC.element_to_be_clickable((By.XPATH, form_menu_xpath))
         )
         element.click()
