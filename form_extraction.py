@@ -49,7 +49,8 @@ def extract(is_listener=False):
     # bell_ringer_form_xpath = ".//a[@href='/Survey/DataList.aspx?AppConfigID=4603080002&FormApplicationID=10244540001&FormCategoryID=10276160001&FormID=14461000001']"
     bell_ringer_form_xpath = "/html/body/form/div[4]/div/div/div[2]/div/div/div/div/div/div[2]/div[3]/div[3]/div/div[3]/ul/li[4]/a/span"
     
-    bell_ringer_form_internal_test_xpath = ".//a[@href='/Survey/DataList.aspx?AppConfigID=4603080002&FormApplicationID=11631380001&FormCategoryID=11663020001&FormID=18367510001']"
+    # bell_ringer_form_internal_test_xpath = ".//a[@href='/Survey/DataList.aspx?AppConfigID=4603080002&FormApplicationID=11631380001&FormCategoryID=11663020001&FormID=18367510001']"
+    bell_ringer_form_internal_test_xpath = "/html/body/form/div[4]/div/div/div[2]/div/div/div/div/div/div[2]/div[3]/div[4]/div/div[3]/ul/li[4]/a/span"
     
     download_button_id = "btnExport"
 
@@ -83,11 +84,11 @@ def extract(is_listener=False):
         )
         element.click()
 
-        print("Looking for form...")
-        element = WebDriverWait(browser, 20).until(
-            EC.element_to_be_clickable((By.ID, form_menu_id))
-        )
-        element.click()
+        # print("Looking for form...")
+        # element = WebDriverWait(browser, 20).until(
+        #    EC.element_to_be_clickable((By.ID, form_menu_id))
+        # )
+        # element.click()
 
         # Select which form to download
         if config.INTERNAL_TESTING:
