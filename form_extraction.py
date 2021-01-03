@@ -84,11 +84,12 @@ def extract(is_listener=False):
         )
         element.click()
 
-        # print("Looking for form...")
-        # element = WebDriverWait(browser, 20).until(
-        #    EC.element_to_be_clickable((By.ID, form_menu_id))
-        # )
-        # element.click()
+        print("Looking for form...")
+        form_menu_xpath = "/html/body/form/div[4]/div/div/div[1]/div[1]/div/div[1]/ul/li[3]/a"
+        element = WebDriverWait(browser, 20).until(
+            EC.element_to_be_clickable((By.XPATH, form_menu_xpath))
+        )
+        element.click()
 
         # Select which form to download
         if config.INTERNAL_TESTING:
