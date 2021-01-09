@@ -17,7 +17,7 @@ def get_options(download_path):
     """
     chrome_options = webdriver.ChromeOptions()
     prefs = {'download.default_directory' : download_path}
-    # chrome_options.headless = True
+     # chrome_options.headless = True
     chrome_options.add_argument("--log-level=3")
 
     chrome_options.add_argument("--window-size=1920,1080")
@@ -30,7 +30,7 @@ def get_options(download_path):
     chrome_options.add_argument("--headless")
 
     chrome_options.add_experimental_option('prefs', prefs)
-
+    
     return chrome_options
 
 def extract(is_listener=False):
@@ -49,12 +49,19 @@ def extract(is_listener=False):
     else:
         data_abs_path = os.path.join(script_dir, "Data/")
 
-    username_xpath = "/html/body/div[1]/div[1]/div/div[3]/div[2]/input"
-    pwd_xpath = "/html/body/div[1]/div[1]/div/div[4]/div/input"
-    login_button_xpath = ".//a[@onclick='askformLogin()']"
+    # username_xpath = "/html/body/div[1]/div[1]/div/div[3]/div[2]/input"
+    username_xpath = "/html/body/section/div/div[2]/div/form/div[1]/input"
+    # pwd_xpath = "/html/body/div[1]/div[1]/div/div[4]/div/input"
+    pwd_xpath = "/html/body/section/div/div[2]/div/form/div[2]/input"
+    # login_button_xpath = ".//a[@onclick='askformLogin()']"
+    login_button_xpath = "/html/body/section/div/div[2]/div/div[2]/a"
+    
     form_menu_id = "menu4603080002"
-    bell_ringer_form_xpath = ".//a[@href='/Survey/DataList.aspx?AppConfigID=4603080002&FormApplicationID=11815900001&FormCategoryID=11847880001&FormID=18742330001']"
-    bell_ringer_form_internal_test_xpath = ".//a[@href='/Survey/DataList.aspx?AppConfigID=4603080002&FormApplicationID=11808260001&FormCategoryID=11840210001&FormID=18731950001']"
+    # bell_ringer_form_xpath = ".//a[@href='/Survey/DataList.aspx?AppConfigID=4603080002&FormApplicationID=10244540001&FormCategoryID=10276160001&FormID=14461000001']"
+    bell_ringer_form_xpath = "/html/body/form/div[4]/div/div/div[2]/div/div/div/div/div/div[2]/div[3]/div[3]/div/div[3]/ul/li[4]/a/span"
+    
+    # bell_ringer_form_internal_test_xpath = ".//a[@href='/Survey/DataList.aspx?AppConfigID=4603080002&FormApplicationID=11631380001&FormCategoryID=11663020001&FormID=18367510001']"
+    bell_ringer_form_internal_test_xpath = "/html/body/form/div[4]/div/div/div[2]/div/div/div/div/div/div[2]/div[3]/div[4]/div/div[3]/ul/li[4]/a/span"
     
     download_button_id = "btnExport"
 
@@ -90,8 +97,9 @@ def extract(is_listener=False):
         element.click()
 
         print("Looking for form...")
+        form_menu_xpath = "/html/body/form/div[4]/div/div/div[1]/div[1]/div/div[1]/ul/li[3]/a"
         element = WebDriverWait(browser, 20).until(
-            EC.element_to_be_clickable((By.ID, form_menu_id))
+            EC.element_to_be_clickable((By.XPATH, form_menu_xpath))
         )
         element.click()
 
