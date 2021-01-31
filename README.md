@@ -33,3 +33,7 @@ python main.py [--options]
 `--disable_email_sending`
 `--disable_freezing`  
 For a complete set of options, please check config.py
+
+## Update Listener
+1. Put new listener excel file under `Data/`, make sure to name the file as `Listeners.xls`
+2. Run `update_database.py` and enter `RELEASE`, `Bell Ringers` following the prompts.
