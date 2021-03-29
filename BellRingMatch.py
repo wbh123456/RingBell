@@ -103,7 +103,7 @@ class Person:
         # 周六和周日的时间仅会匹配到western西安大略大学的倾听者。
         # 其余时间两所学校都可以进行匹配。
         western_invalid_slots = set([3, 8, 13, 18, 23, 28, 33])
-        toronto_invalid_slots = set([26, 27, 27, 29, 30, 31, 32, 33, 34])
+        toronto_invalid_slots = set([26, 27, 28, 29, 30, 31, 32, 33, 34, 35])
         bell_ringer_avail_set = set(self.availability[:])
         if self.university == "西安大略大学 Western University":
             # check if the bell ringer's availability is a subset of western's invalid slots
