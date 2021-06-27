@@ -375,11 +375,11 @@ def read_xls(file_name, is_listener = False, startLine = 1):
             name = str(sheet.cell_value(i, bell_ringer_xls_dict["name"]))
 
             # Construct Person instance
-            print("sheet file_name: ", file_name)
-            print("the total columns: ", sheet.ncols)
-            print("row num:", i )
-            print("col 0 string: " + str(sheet.cell_value(i, 0)))
-            print("col 4 string: " + str(sheet.cell_value(i, 4)))
+            # print("sheet file_name: ", file_name)
+            # print("the total columns: ", sheet.ncols)
+            # print("row num:", i )
+            # print("col 0 string: " + str(sheet.cell_value(i, 0)))
+            # print("col 4 string: " + str(sheet.cell_value(i, 4)))
             
             to_topic = str(sheet.cell_value(i, bell_ringer_xls_dict["topic"]))
             to_topic = str(sheet.cell_value(i, bell_ringer_xls_dict["extra_topic"])) if to_topic == "其它" else to_topic
