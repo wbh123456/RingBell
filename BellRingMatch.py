@@ -23,9 +23,9 @@ NUM_SLOTS_IN_ONE_DAY = 5
 
 # A dictionary maps column name to its column index on the bell ringer form
 bell_ringer_xls_dict = {
-    "application_time":0, "name":1, "email":3, "WID":4, "gender":5, "university":6, "topic":8, "extra_topic":9,
-    "faculty":10, "need":11, "extra_need":12, "condition":13, "extra_condition":14, "availability":15,
-    "other_info":16
+    "application_time":3, "name":4, "email":6, "WID":7, "gender":8, "university":9, "topic":8, "extra_topic": 11,
+    "faculty":13, "need":14, "extra_need":12, "condition":16, "extra_condition":17, "availability":0,
+    "other_info":1
 }
 
 # A dictionary that maps the english property to column in the askform in chinese
@@ -375,6 +375,12 @@ def read_xls(file_name, is_listener = False, startLine = 1):
             name = str(sheet.cell_value(i, bell_ringer_xls_dict["name"]))
 
             # Construct Person instance
+            print("sheet file_name: ", file_name)
+            print("the total columns: ", sheet.ncols)
+            print("row num:", i )
+            print("col 0 string: " + str(sheet.cell_value(i, 0)))
+            print("col 4 string: " + str(sheet.cell_value(i, 4)))
+            
             to_topic = str(sheet.cell_value(i, bell_ringer_xls_dict["topic"]))
             to_topic = str(sheet.cell_value(i, bell_ringer_xls_dict["extra_topic"])) if to_topic == "其它" else to_topic
             to_need  = str(sheet.cell_value(i, bell_ringer_xls_dict["need"]))
@@ -382,6 +388,7 @@ def read_xls(file_name, is_listener = False, startLine = 1):
             to_condition = str(sheet.cell_value(i, bell_ringer_xls_dict["condition"])) 
             to_condition = str(sheet.cell_value(i, bell_ringer_xls_dict["extra_condition"])) if to_condition == "其他" else to_condition 
             to_university = str(sheet.cell_value(i, bell_ringer_xls_dict["university"]))
+            
             info.append(Person
                 (application_time_toronto,  #application_time
                  name,  #Name
