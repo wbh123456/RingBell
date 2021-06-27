@@ -24,8 +24,8 @@ NUM_SLOTS_IN_ONE_DAY = 5
 # A dictionary maps column name to its column index on the bell ringer form
 bell_ringer_xls_dict = {
     "application_time":0, "name":1, "email":3, "WID":4, "gender":5, "university":6, "topic":8, "extra_topic":9,
-    "faculty":10, "need":11, "extra_need":12, "condition":13, "extra_condition":14, "availability":15,
-    "other_info":16
+    "faculty":10, "need":11, "extra_need":12, "condition":13, "extra_condition":14, "availability":17,
+    "other_info":18
 }
 
 # A dictionary that maps the english property to column in the askform in chinese
