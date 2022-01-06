@@ -35,7 +35,7 @@ jobs:
         pip install selenium
         pip install xlrd
         pip install xlutils
-        pip install pymongo
+        pip install pymongo==3.12.1
     - name: Run
       run: |
         python main.py --release_mode
