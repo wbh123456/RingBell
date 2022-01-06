@@ -294,7 +294,7 @@ def get_new_bellringer(bellringer_form, bellringer_collection):
     all_bellringers = read_xls(bellringer_form)
     new_bellringers = []
     for br in all_bellringers:
-        if bellringer_collection.find({'_id':br.db_id}).count_documents() == 0:
+        if len(list(bellringer_collection.find({'_id':br.db_id}))) == 0:
             new_bellringers.append(br)
             print("   Found new bell ringer:")
             br.print_person()
